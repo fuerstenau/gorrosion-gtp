@@ -1,15 +1,7 @@
 sudo: required
 language: rust
 
-# TODO: Only gtp requires nightly. How to configure this?
-#rust:
-#  - stable
-#  - beta
-#  - nightly
-#matrix:
-#  allow_failures:
-#    - rust: nightly
-#  fast_finish: true
+# TODO: Once TryFrom is stabilized, switch to conventional build matrix.
 rust:
   - nightly
 
