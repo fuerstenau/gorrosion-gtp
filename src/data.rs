@@ -164,7 +164,7 @@ impl Data for String {
 			Ok((rem, data)) => {
 				let data = data.iter_elements().collect();
 				Ok((rem, String { data }))
-			},
+			}
 			Err(e) => Err(e),
 		}
 	}
@@ -181,11 +181,63 @@ pub enum Vertex {
 	Coord(char, u8),
 }
 
+impl From<Vertex> for MessagePart {
+	fn from(vert: Vertex) -> MessagePart {
+		let msg: Vec<Byte> = match vert {
+			Vertex::Pass => b"pass".to_vec(),
+			Vertex::Coord(letter, number) => {
+				let mut num = Vec::from(
+					number.to_string().as_bytes(),
+				);
+				let mut msg = Vec::with_capacity(num.len() + 1);
+				msg.push(letter as Byte);
+				msg.append(&mut num);
+				msg
+			}
+		};
+		MessagePart { msg }
+	}
+}
+
+impl Data for Vertex {
+	type Type = data_types::Vertex;
+
+	fn parse(i: Input, _t: Self::Type) -> IResult<Input, Self> {
+		unimplemented!()
+	}
+
+	fn typed(&self) -> Self::Type {
+		data_types::Vertex::Vertex
+	}
+}
+
 impl SimpleEntity for Vertex {}
 
 pub enum Color {
 	Black,
 	White,
+}
+
+impl From<Color> for MessagePart {
+	fn from(col: Color) -> MessagePart {
+		let msg = match col {
+			Color::Black => b"Black",
+			Color::White => b"White",
+		}.to_vec();
+		MessagePart { msg }
+	}
+}
+
+impl Data for Color {
+	type Type = data_types::Color;
+
+	fn parse(i: Input, _t: Self::Type) -> IResult<Input, Self> {
+		unimplemented!()
+	}
+
+	fn typed(&self) -> Self::Type {
+		data_types::Color::Color
+	}
 }
 
 impl SimpleEntity for Color {}
@@ -195,11 +247,54 @@ pub struct Move {
 	vertex: Vertex,
 }
 
+impl From<Move> for MessagePart {
+	fn from(m: Move) -> MessagePart {
+		let mut msg = MessagePart::from(m.color).msg;
+		msg.extend(b" ");
+		msg.append(&mut MessagePart::from(m.vertex).msg);
+		MessagePart { msg }
+	}
+}
+
+impl Data for Move {
+	type Type = data_types::Move;
+
+	fn parse(i: Input, _t: Self::Type) -> IResult<Input, Self> {
+		unimplemented!()
+	}
+
+	fn typed(&self) -> Self::Type {
+		data_types::Move::Move
+	}
+}
+
 impl SimpleEntity for Move {}
 
 pub enum Boolean {
 	False,
 	True,
+}
+
+impl From<Boolean> for MessagePart {
+	fn from(b: Boolean) -> MessagePart {
+		let msg = match b {
+			Boolean::False => b"false".to_vec(),
+			Boolean::True => b"true".to_vec(),
+		};
+		MessagePart { msg }
+	}
+}
+
+impl Data for Boolean {
+	type Type = data_types::Boolean;
+
+	fn parse(i: Input, _t: Self::Type) -> IResult<Input, Self> {
+		unimplemented!()
+	}
+
+	fn typed(&self) -> Self::Type {
+		data_types::Boolean::Boolean
+	}
 }
 
 impl SimpleEntity for Boolean {}
