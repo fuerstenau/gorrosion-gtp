@@ -3,13 +3,14 @@ use nom::*;
 use std::iter;
 
 const DISCARD: [Byte; 31] = [
-	0, 1, 2, 3, 4, 5, 6, 7, 8, 11, 12, 13, 14, 15, 16, 17, 18, 19,
-	20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 127,
+	0, 1, 2, 3, 4, 5, 6, 7, 8, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
+	22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 127,
 ]; // “Control characters”: 0 – 8, 11 – 31, 127
 const SPACE: [Byte; 2] = [9, 32]; // " \t"
 const NEWLINE: Byte = 10; // "\n"
 const COMMENT: Byte = 35; // "#"
 
+#[derive(Clone, Copy)]
 pub struct Input<'a> {
 	bytes: &'a [Byte],
 }
@@ -23,8 +24,8 @@ impl<'a> std::convert::From<&'a [u8]> for Input<'a> {
 impl<'a> AtEof for Input<'a> {
 	/// While it might be possible in some settings
 	/// to determine that the connection has closed
-	/// and no further data may arrive
-	/// it is quite considering the particular syntax of GTP.
+	/// and no further data may arrive,
+	/// it is quite irrelevant considering the particular syntax of GTP.
 	/// The only use case would be determining malformed input
 	/// which ends without proper termination
 	/// but this is currently beyond the scope
@@ -54,10 +55,37 @@ impl<'a> InputTake for Input<'a> {
 	}
 }
 
+impl<'a, R> Slice<R> for Input<'a>
+where
+	&'a [Byte]: Slice<R>,
+{
+	fn slice(&self, range: R) -> Self {
+		let bytes = self.bytes.slice(range);
+		Input { bytes }
+	}
+}
+
+impl<'a> Offset for Input<'a> {
+	fn offset(&self, second: &Self) -> usize {
+		self.bytes.offset(second.bytes)
+	}
+}
+
+impl<'a, R> ParseTo<R> for Input<'a>
+where
+	&'a [Byte]: ParseTo<R>,
+{
+	fn parse_to(&self) -> Option<R> {
+		self.bytes.parse_to()
+	}
+}
+
+/// This allows us to use a default implementation for InputTakeAtPosition.
+impl<'a> UnspecializedInput for Input<'a> {}
+
 pub struct InputIterator<'a> {
 	bytes: &'a [Byte],
-	/// One more than the position of the last element
-	/// that was output.
+	/// One more than the position of the last element that was output.
 	/// If we are not at the end of the iteration
 	/// and there are no discardable bytes,
 	/// it happens to be the position of the next element.
@@ -109,18 +137,18 @@ impl<'a> InputIter for Input<'a> {
 
 	fn position<P>(&self, predicate: P) -> Option<usize>
 	where
-		P: Fn(Self::RawItem) -> bool
+		P: Fn(Self::RawItem) -> bool,
 	{
 		let mut iter = self.iter_elements();
 		loop {
 			if let Some(elem) = iter.next() {
 				if predicate(elem) {
-					continue
+					continue;
 				} else {
-					break Some(iter.last_pos())
+					break Some(iter.last_pos());
 				}
 			} else {
-				break None
+				break None;
 			}
 		}
 	}

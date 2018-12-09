@@ -11,7 +11,6 @@ mod parse;
 use messages::MessagePart;
 use parse::Input;
 
-
 mod messages {
 	pub struct MessagePart {
 		data: Vec<Byte>,

@@ -1,9 +1,11 @@
 use super::Byte;
 use super::Input;
+use nom::InputIter;
 use std::str::FromStr;
+use std::string::ToString;
 //use super::MessagePart;
 struct MessagePart {
-	data: Vec<Byte>,
+	msg: Vec<Byte>,
 }
 
 // TODO: I'm unhappy with quite a few of the names.
@@ -42,8 +44,21 @@ mod simple_entity {
 		Boolean(super::Boolean),
 	}
 
-	pub trait SimpleEntity: Data + TryFrom<Value> + Into<Value> {
+	pub trait SimpleEntity: Data + TryFrom<Value> + Into<Value> {}
+}
+
+// TODO: Get this to namespace sensibly.
+mod data_types {
+	macro_rules! singleton_type {
+		( $i: ident ) => {
+			pub enum $i {
+				$i,
+			}
+		};
 	}
+
+	singleton_type!(Int);
+	singleton_type!(Float);
 }
 
 pub trait GtpType {}
@@ -58,19 +73,10 @@ pub struct Int {
 }
 
 impl From<Int> for MessagePart {
-	fn from(Int{ data }: Int) -> MessagePart {
-		let data = Vec::new();
-		MessagePart { data }
+	fn from(Int { data }: Int) -> MessagePart {
+		let msg = Vec::from(data.to_string().as_bytes());
+		MessagePart { msg }
 	}
-}
-
-// TODO: Get tihs to namespace sensibly.
-mod data_types {
-	macro_rules! singleton_type {
-		( $i: ident ) => {pub enum $i { $i, }}
-	}
-
-	singleton_type!(Int);
 }
 
 impl Data for Int {
@@ -78,8 +84,18 @@ impl Data for Int {
 
 	// FIXME: Error handling
 	fn parse(i: Input, _t: Self::Type) -> IResult<Input, Self> {
-		let data = map!(i, nom::digit, |str| FromStr::from_str(&str).unwrap());
-		Ok(Int { data })
+		let digits = nom::digit(i);
+		match digits {
+			Ok((rem, str)) => {
+				let str = str
+					.iter_elements()
+					.map(nom::AsChar::as_char)
+					.collect::<std::string::String>();
+				let data = FromStr::from_str(&str).unwrap();
+				Ok((rem, Int { data }))
+			}
+			Err(e) => Err(e),
+		}
 	}
 
 	fn typed(&self) -> Self::Type {
@@ -91,6 +107,34 @@ impl SimpleEntity for Int {}
 
 pub struct Float {
 	data: f32,
+}
+
+impl From<Float> for MessagePart {
+	fn from(Float { data }: Float) -> MessagePart {
+		let msg = Vec::from(data.to_string().as_bytes());
+		MessagePart { msg }
+	}
+}
+
+impl Data for Float {
+	type Type = data_types::Float;
+
+	/// The GTP “specification” does not specify
+	/// in which ways a float may be represented.
+	/// We therefore simply accept as a float
+	/// whatever nom accepts as a float.
+	// FIXME: Error handling
+	fn parse(i: Input, _t: Self::Type) -> IResult<Input, Self> {
+		let result = nom::float(i);
+		match result {
+			Ok((rem, data)) => Ok((rem, Float { data })),
+			Err(e) => Err(e),
+		}
+	}
+
+	fn typed(&self) -> Self::Type {
+		data_types::Float::Float
+	}
 }
 
 impl SimpleEntity for Float {}
