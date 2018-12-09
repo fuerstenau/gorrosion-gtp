@@ -1,4 +1,5 @@
 #![feature(try_from)]
+#![feature(stmt_expr_attributes)]
 
 #[macro_use]
 extern crate nom;

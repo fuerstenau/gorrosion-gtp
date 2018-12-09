@@ -10,7 +10,7 @@ const SPACE: [Byte; 2] = [9, 32]; // " \t"
 const NEWLINE: Byte = 10; // "\n"
 const COMMENT: Byte = 35; // "#"
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub struct Input<'a> {
 	bytes: &'a [Byte],
 }
@@ -77,6 +77,19 @@ where
 {
 	fn parse_to(&self) -> Option<R> {
 		self.bytes.parse_to()
+	}
+}
+
+impl<'a, T> Compare<T> for Input<'a>
+where
+	&'a [Byte]: Compare<T>,
+{
+	fn compare(&self, t: T) -> CompareResult {
+		self.bytes.compare(t)
+	}
+
+	fn compare_no_case(&self, t: T) -> CompareResult {
+		self.bytes.compare_no_case(t)
 	}
 }
 

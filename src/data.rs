@@ -1,6 +1,7 @@
 use super::Byte;
 use super::Input;
 use nom::InputIter;
+use nom::ParseTo;
 use std::str::FromStr;
 use std::string::ToString;
 //use super::MessagePart;
@@ -87,7 +88,7 @@ impl From<Int> for MessagePart {
 impl Data for Int {
 	type Type = data_types::Int;
 
-	// FIXME: Error handling
+	// TODO: Use ParseTo?
 	fn parse(i: Input, _t: Self::Type) -> IResult<Input, Self> {
 		let digits = nom::digit(i);
 		match digits {
@@ -128,7 +129,6 @@ impl Data for Float {
 	/// in which ways a float may be represented.
 	/// We therefore simply accept as a float
 	/// whatever nom accepts as a float.
-	// FIXME: Error handling
 	fn parse(i: Input, _t: Self::Type) -> IResult<Input, Self> {
 		let result = nom::float(i);
 		match result {
@@ -203,7 +203,21 @@ impl Data for Vertex {
 	type Type = data_types::Vertex;
 
 	fn parse(i: Input, _t: Self::Type) -> IResult<Input, Self> {
-		unimplemented!()
+		// Everything but “i” and “I”
+		const LEGAL_LETTERS: &[Byte] =
+			b"abcdefghjklmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ";
+		#[rustfmt::skip]
+		alt!(i,
+			value!(Vertex::Pass, tag_no_case!("pass")) |
+			do_parse!(
+				letter: one_of!(LEGAL_LETTERS) >>
+				digits: call!(nom::digit) >>
+				(Vertex::Coord(
+					letter,
+					digits.parse_to().unwrap(),
+				))
+			)
+		)
 	}
 
 	fn typed(&self) -> Self::Type {
