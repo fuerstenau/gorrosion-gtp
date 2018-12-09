@@ -246,7 +246,17 @@ impl Data for Color {
 	type Type = data_types::Color;
 
 	fn parse(i: Input, _t: Self::Type) -> IResult<Input, Self> {
-		unimplemented!()
+		#[rustfmt::skip]
+		alt!(i,
+			value!(
+				Color::White,
+				alt!(tag_no_case!("W") | tag_no_case!("white"))
+			) |
+			value!(
+				Color::Black,
+				alt!(tag_no_case!("B") | tag_no_case!("black"))
+			)
+		)
 	}
 
 	fn typed(&self) -> Self::Type {
@@ -274,7 +284,16 @@ impl Data for Move {
 	type Type = data_types::Move;
 
 	fn parse(i: Input, _t: Self::Type) -> IResult<Input, Self> {
-		unimplemented!()
+		let parse_color = |i| Color::parse(i, data_types::Color::Color);
+		let parse_vertex =
+			|i| Vertex::parse(i, data_types::Vertex::Vertex);
+		#[rustfmt::skip]
+		do_parse!(i,
+			color: call!(parse_color) >>
+			tag!(" ") >>
+			vertex: call!(parse_vertex) >>
+			(Move { color, vertex })
+		)
 	}
 
 	fn typed(&self) -> Self::Type {
@@ -303,7 +322,11 @@ impl Data for Boolean {
 	type Type = data_types::Boolean;
 
 	fn parse(i: Input, _t: Self::Type) -> IResult<Input, Self> {
-		unimplemented!()
+		#[rustfmt::skip]
+		alt!(i,
+			value!(Boolean::False, tag!("false")) |
+			value!(Boolean::True, tag!("true"))
+		)
 	}
 
 	fn typed(&self) -> Self::Type {
