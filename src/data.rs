@@ -1,25 +1,25 @@
 use super::Byte;
 use super::Input;
-use super::MessagePart;
+use std::str::FromStr;
+//use super::MessagePart;
+struct MessagePart {
+	data: Vec<Byte>,
+}
 
 // TODO: I'm unhappy with quite a few of the names.
 
-use self::common::Common;
 //use self::simple_entity::SimpleEntity;
+use nom::IResult;
 
-mod common {
-	use super::Input;
-	use super::MessagePart;
-	use nom::IResult;
-
-	pub trait Common: Into<MessagePart> {
-		// TODO: Which kind of errors do we need to throw?
-		fn parse(i: Input) -> IResult<Input, Self>;
-	}
+pub trait Data: Into<MessagePart> {
+	type Type;
+	// TODO: Which kind of errors do we need to throw?
+	fn parse(i: Input, t: Self::Type) -> IResult<Input, Self>;
+	fn typed(&self) -> Self::Type;
 }
 
 mod simple_entity {
-	use super::Common;
+	use super::Data;
 	use std::convert::TryFrom;
 
 	pub enum Type {
@@ -42,8 +42,7 @@ mod simple_entity {
 		Boolean(super::Boolean),
 	}
 
-	pub trait SimpleEntity: Common + TryFrom<Value> + Into<Value> {
-		fn concrete_type(&self) -> Type;
+	pub trait SimpleEntity: Data + TryFrom<Value> + Into<Value> {
 	}
 }
 
@@ -56,6 +55,36 @@ impl SingleLine for SimpleEntity {}
 
 pub struct Int {
 	data: u32,
+}
+
+impl From<Int> for MessagePart {
+	fn from(Int{ data }: Int) -> MessagePart {
+		let data = Vec::new();
+		MessagePart { data }
+	}
+}
+
+// TODO: Get tihs to namespace sensibly.
+mod data_types {
+	macro_rules! singleton_type {
+		( $i: ident ) => {pub enum $i { $i, }}
+	}
+
+	singleton_type!(Int);
+}
+
+impl Data for Int {
+	type Type = data_types::Int;
+
+	// FIXME: Error handling
+	fn parse(i: Input, _t: Self::Type) -> IResult<Input, Self> {
+		let data = map!(i, nom::digit, |str| FromStr::from_str(&str).unwrap());
+		Ok(Int { data })
+	}
+
+	fn typed(&self) -> Self::Type {
+		data_types::Int::Int
+	}
 }
 
 impl SimpleEntity for Int {}
