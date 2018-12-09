@@ -59,6 +59,11 @@ mod data_types {
 
 	singleton_type!(Int);
 	singleton_type!(Float);
+	singleton_type!(String);
+	singleton_type!(Vertex);
+	singleton_type!(Color);
+	singleton_type!(Move);
+	singleton_type!(Boolean);
 }
 
 pub trait GtpType {}
@@ -141,6 +146,32 @@ impl SimpleEntity for Float {}
 
 pub struct String {
 	data: Vec<Byte>,
+}
+
+impl From<String> for MessagePart {
+	fn from(String { data }: String) -> MessagePart {
+		let msg = data;
+		MessagePart { msg }
+	}
+}
+
+impl Data for String {
+	type Type = data_types::String;
+
+	fn parse(i: Input, _t: Self::Type) -> IResult<Input, Self> {
+		let result = take_until_either!(i, b" \n");
+		match result {
+			Ok((rem, data)) => {
+				let data = data.iter_elements().collect();
+				Ok((rem, String { data }))
+			},
+			Err(e) => Err(e),
+		}
+	}
+
+	fn typed(&self) -> Self::Type {
+		data_types::String::String
+	}
 }
 
 impl SimpleEntity for String {}

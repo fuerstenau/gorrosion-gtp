@@ -83,6 +83,7 @@ where
 /// This allows us to use a default implementation for InputTakeAtPosition.
 impl<'a> UnspecializedInput for Input<'a> {}
 
+// FIXME: Convert tab to space
 pub struct InputIterator<'a> {
 	bytes: &'a [Byte],
 	/// One more than the position of the last element that was output.
