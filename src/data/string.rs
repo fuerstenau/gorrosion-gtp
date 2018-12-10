@@ -1,4 +1,5 @@
 use super::*;
+use nom::InputIter;
 
 pub struct Value {
 	data: Vec<Byte>,

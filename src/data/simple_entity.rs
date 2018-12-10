@@ -36,32 +36,31 @@ impl From<Value> for MessagePart {
 	}
 }
 
-/* macro_rules! parse {
-	( $i:expr, $e:expr; $( $t:ident ), * ) => {
+macro_rules! parse {
+	( $i:expr, $e:expr; $( ($t:ident, $m:ident) ), * ) => {
 		match $e {
 			$( Type::$t =>
-				super::$t::parse($i, data_types::$t::$t)
-					.map(|(rem, res)| (rem, Value::$t(res))),
+				$m::Value::parse($i, $m::Type::default())
+					.map(|(rm, rs)| (rm, Value::$t(rs))),
 			)*
 		}
 	}
-}*/
+}
 
 impl Data for Value {
 	type Type = Type;
 
 	fn parse(i: Input, t: Self::Type) -> IResult<Input, Self> {
-		unimplemented!()
-	/*	#[rustfmt::skip]
+		#[rustfmt::skip]
 		parse!(i, t;
-			Int,
-			Float,
-			String,
-			Vertex,
-			Color,
-			Move,
-			Boolean
-		)*/
+			(Int, int),
+			(Float, float),
+			(String, string),
+			(Vertex, vertex),
+			(Color, color),
+			(Motion, motion),
+			(Boolean, boolean)
+		)
 	}
 
 	fn typed(&self) -> Self::Type {

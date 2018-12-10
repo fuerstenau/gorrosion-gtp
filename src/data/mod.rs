@@ -1,6 +1,6 @@
 use super::Byte;
 use super::Input;
-use nom::InputIter;
+use nom::IResult;
 
 // FIXME: Double definition.
 struct MessagePart {
@@ -8,9 +8,6 @@ struct MessagePart {
 }
 
 // TODO: I'm unhappy with quite a few of the names.
-
-//use self::simple_entity::SimpleEntity;
-use nom::IResult;
 
 pub trait Data: Into<MessagePart> {
 	type Type;
