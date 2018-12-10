@@ -4,22 +4,13 @@ use super::*;
 // by the weird semi-support of Rust for enums.
 // If we want to export it publicly under some name,
 // we have to use this name in the initial declaration already.
+#[derive(Clone, Copy)]
 pub enum Color {
 	Black,
 	White,
 }
 
 pub type Value = Color;
-
-impl From<Value> for MessagePart {
-	fn from(col: Value) -> MessagePart {
-		let msg = match col {
-			Color::Black => b"Black".to_vec(),
-			Color::White => b"White".to_vec(),
-		};
-		MessagePart { msg }
-	}
-}
 
 singleton_type!(Color);
 

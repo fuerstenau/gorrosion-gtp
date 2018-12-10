@@ -4,10 +4,15 @@ pub struct Value {
 	data: f32,
 }
 
-impl From<Value> for MessagePart {
-	fn from(Value { data }: Value) -> MessagePart {
-		let msg = Vec::from(data.to_string().as_bytes());
-		MessagePart { msg }
+impl From<f32> for Value {
+	fn from(data: f32) -> Value {
+		Value { data }
+	}
+}
+
+impl From<Value> for f32 {
+	fn from(v: Value) -> f32 {
+		v.data
 	}
 }
 

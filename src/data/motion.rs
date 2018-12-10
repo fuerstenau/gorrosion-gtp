@@ -5,12 +5,13 @@ pub struct Value {
 	vertex: vertex::Value,
 }
 
-impl From<Value> for MessagePart {
-	fn from(m: Value) -> MessagePart {
-		let mut msg = MessagePart::from(m.color).msg;
-		msg.extend(b" ");
-		msg.append(&mut MessagePart::from(m.vertex).msg);
-		MessagePart { msg }
+impl Value {
+	pub fn color(&self) -> &color::Value {
+		&self.color
+	}
+
+	pub fn vertex(&self) -> &vertex::Value {
+		&self.vertex
 	}
 }
 

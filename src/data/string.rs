@@ -5,10 +5,9 @@ pub struct Value {
 	data: Vec<Byte>,
 }
 
-impl From<Value> for MessagePart {
-	fn from(Value { data }: Value) -> MessagePart {
-		let msg = data;
-		MessagePart { msg }
+impl From<Value> for Vec<Byte> {
+	fn from(v: Value) -> Vec<Byte> {
+		v.data
 	}
 }
 

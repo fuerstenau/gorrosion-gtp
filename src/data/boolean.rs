@@ -11,13 +11,18 @@ pub enum Boolean {
 
 pub type Value = Boolean;
 
-impl From<Value> for MessagePart {
-	fn from(b: Value) -> MessagePart {
-		let msg = match b {
-			Boolean::False => b"false".to_vec(),
-			Boolean::True => b"true".to_vec(),
-		};
-		MessagePart { msg }
+impl From<bool> for Value {
+	fn from(b: bool) -> Value {
+		if b { Boolean::True } else { Boolean::False }
+	}
+}
+
+impl From<Value> for bool {
+	fn from(v: Value) -> bool {
+		match v {
+			Boolean::True => true,
+			Boolean::False => false,
+		}
 	}
 }
 

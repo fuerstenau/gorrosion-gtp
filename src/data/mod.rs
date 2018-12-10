@@ -1,11 +1,7 @@
 use super::Byte;
 use super::Input;
 use nom::IResult;
-
-// FIXME: Double definition.
-struct MessagePart {
-	msg: Vec<Byte>,
-}
+use super::messages::MessagePart;
 
 // TODO: I'm unhappy with quite a few of the names.
 
