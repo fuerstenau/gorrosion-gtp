@@ -22,7 +22,11 @@ pub trait Data: Into<MessagePart> {
 }
 
 mod simple_entity {
+	use super::data_types;
 	use super::Data;
+	use super::Input;
+	use super::MessagePart;
+	use nom::IResult;
 	use std::convert::TryFrom;
 
 	pub enum Type {
@@ -43,6 +47,65 @@ mod simple_entity {
 		Color(super::Color),
 		Move(super::Move),
 		Boolean(super::Boolean),
+	}
+
+	impl From<Value> for MessagePart {
+		fn from(val: Value) -> MessagePart {
+			match val {
+				Value::Int(v) => MessagePart::from(v),
+				Value::Float(v) => MessagePart::from(v),
+				Value::String(v) => MessagePart::from(v),
+				Value::Vertex(v) => MessagePart::from(v),
+				Value::Color(v) => MessagePart::from(v),
+				Value::Move(v) => MessagePart::from(v),
+				Value::Boolean(v) => MessagePart::from(v),
+			}
+		}
+	}
+
+	impl Data for Value {
+		type Type = Type;
+
+		fn parse(i: Input, t: Self::Type) -> IResult<Input, Self> {
+			macro_rules! match_t { ( $( $t:ident ), * ) => {
+				match t {
+				$( Type::$t =>
+					super::$t::parse(i, data_types::$t::$t)
+					.map(|(i, res)| (i, Value::$t(res))),
+				)*
+				}
+			}}
+			#[rustfmt::skip]
+			match_t!(
+				Int,
+				Float,
+				String,
+				Vertex,
+				Color,
+				Move,
+				Boolean
+			)
+		}
+
+		fn typed(&self) -> Self::Type {
+			macro_rules! match_self {
+				( $( $t:ident ), * ) => {
+					match self {
+						$( Value::$t(_) =>  Type::$t, )*
+					}
+				}
+			}
+			#[rustfmt::skip]
+			match_self!(
+				Int,
+				Float,
+				String,
+				Vertex,
+				Color,
+				Move,
+				Boolean
+			)
+		}
 	}
 
 	pub trait SimpleEntity: Data + TryFrom<Value> + Into<Value> {}
