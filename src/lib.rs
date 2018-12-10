@@ -19,12 +19,19 @@ mod parse;
 use messages::MessagePart;
 use parse::Input;
 
+mod gtp_types {
+	use super::data::*;
+	pub type Int = int::Value;
+	pub type Collection = collection::Value;
+	pub type MultilineList = multiline_list::Value;
+}
+
 mod messages {
 	pub struct MessagePart {
 		data: Vec<Byte>,
 	}
 
-	use super::data::*;
+	use super::gtp_types::*;
 	use super::Byte;
 
 	pub struct CommandMessage {
@@ -33,18 +40,12 @@ mod messages {
 		arguments: Collection,
 	}
 
-	pub struct Line {
-		data: Vec<Byte>,
-	}
-
-	impl SingleLine for Line {}
-
 	// TODO: Support for standard error messages?
 
 	pub enum Content {
 		Collection(Collection),
-		Response(MultilineList<Line>),
-		ErrorMessage(MultilineList<List<String>>),
+		Response(MultilineList),
+		ErrorMessage(MultilineList),
 	}
 
 	pub struct ResponseMessage {
