@@ -16,4 +16,4 @@ coveralls = { repository = "fuerstenau/gorrosion", branch = "master", service = 
 maintenance = { status = "actively-developed" }
 
 [dependencies]
-nom = { version = "^4.0" }
+nom = { version = "^4.1" }

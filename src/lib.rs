@@ -19,7 +19,7 @@ mod parse;
 
 use parse::Input;
 
-mod gtp_type {
+pub mod gtp_type {
 	use super::data::*;
 	pub type Int = int::Value;
 	pub type Float = float::Value;
