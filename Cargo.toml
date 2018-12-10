@@ -1,6 +1,6 @@
 [package]
 name = "gorrosion-gtp"
-version = "0.1.1"
+version = "0.1.2"
 authors = ["Peter Fürstenau <fuerstenau@mathematik.tu-darmstadt.de>"]
 description = "A best-effort strongly typed interface between Rust and GTP, the Go Text Protocoll"
 license = "MIT OR Apache-2.0"
@@ -11,8 +11,8 @@ categories = ["game-engines"]
 documentation = "https://docs.rs/gorrosion-gtp"
 
 [badges]
-travis-ci = { repository = "fuerstenau/gorrosion", branch = "master" }
-coveralls = { repository = "fuerstenau/gorrosion", branch = "master", service = "github" }
+travis-ci = { repository = "fuerstenau/gorrosion-gtp", branch = "master" }
+coveralls = { repository = "fuerstenau/gorrosion-gtp", branch = "master", service = "github" }
 maintenance = { status = "actively-developed" }
 
 [dependencies]
