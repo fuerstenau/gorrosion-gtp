@@ -63,20 +63,31 @@ mod simple_entity {
 		}
 	}
 
+	macro_rules! type_of {
+		( $s:expr; $( $t:ident ), * ) => {
+			match $s {
+				$( Value::$t(_) =>  Type::$t, )*
+			}
+		}
+	}
+
+	macro_rules! parse {
+		( $i:expr, $e:expr; $( $t:ident ), * ) => {
+			match $e {
+				$( Type::$t =>
+					super::$t::parse($i, data_types::$t::$t)
+						.map(|(rem, res)| (rem, Value::$t(res))),
+				)*
+			}
+		}
+	}
+
 	impl Data for Value {
 		type Type = Type;
 
 		fn parse(i: Input, t: Self::Type) -> IResult<Input, Self> {
-			macro_rules! match_t { ( $( $t:ident ), * ) => {
-				match t {
-				$( Type::$t =>
-					super::$t::parse(i, data_types::$t::$t)
-					.map(|(i, res)| (i, Value::$t(res))),
-				)*
-				}
-			}}
 			#[rustfmt::skip]
-			match_t!(
+			parse!(i, t;
 				Int,
 				Float,
 				String,
@@ -88,15 +99,8 @@ mod simple_entity {
 		}
 
 		fn typed(&self) -> Self::Type {
-			macro_rules! match_self {
-				( $( $t:ident ), * ) => {
-					match self {
-						$( Value::$t(_) =>  Type::$t, )*
-					}
-				}
-			}
 			#[rustfmt::skip]
-			match_self!(
+			type_of!(self;
 				Int,
 				Float,
 				String,
