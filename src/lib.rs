@@ -1,5 +1,7 @@
 #![feature(try_from)]
 #![feature(stmt_expr_attributes)]
+// TODO: Disable once all the code lives
+#![allow(dead_code)]
 
 #[macro_use]
 extern crate nom;
@@ -16,46 +18,27 @@ type Byte = u8;
 mod data;
 mod parse;
 
-use messages::MessagePart;
 use parse::Input;
 
-mod gtp_types {
+mod gtp_type {
 	use super::data::*;
 	pub type Int = int::Value;
+	pub type Float = float::Value;
+	pub type String = string::Value;
+	pub use self::vertex::Vertex;
+	pub use self::color::Color;
+	pub type Move = motion::Value;
+	pub use self::boolean::Boolean;
 	pub type Collection = collection::Value;
+	pub type List = list::Value;
+	pub type Alternatives = alternatives::Value;
 	pub type MultilineList = multiline_list::Value;
 }
 
-mod messages {
-	pub struct MessagePart {
-		data: Vec<Byte>,
-	}
-
-	use super::gtp_types::*;
-	use super::Byte;
-
-	pub struct CommandMessage {
-		id: Option<Int>,
-		command_name: String,
-		arguments: Collection,
-	}
-
-	// TODO: Support for standard error messages?
-
-	pub enum Content {
-		Collection(Collection),
-		Response(MultilineList),
-		ErrorMessage(MultilineList),
-	}
-
-	pub struct ResponseMessage {
-		id: Option<Int>,
-		content: Content,
-	}
-}
+mod messages;
 
 mod command {
-	use super::data::*;
+	use super::gtp_type::*;
 
 	// TODO: Macros
 

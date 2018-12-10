@@ -1,10 +1,8 @@
 use super::Byte;
 use super::Input;
 use nom::InputIter;
-use nom::ParseTo;
-use std::str::FromStr;
-use std::string::ToString;
-//use super::MessagePart;
+
+// FIXME: Double definition.
 struct MessagePart {
 	msg: Vec<Byte>,
 }

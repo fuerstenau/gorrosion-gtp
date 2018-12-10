@@ -1,4 +1,4 @@
-use std::str::FromStr;
+use nom::ParseTo;
 use super::*;
 
 pub struct Value {
@@ -21,11 +21,7 @@ impl Data for Value {
 		let digits = nom::digit(i);
 		match digits {
 			Ok((rem, str)) => {
-				let str = str
-					.iter_elements()
-					.map(nom::AsChar::as_char)
-					.collect::<std::string::String>();
-				let data = FromStr::from_str(&str).unwrap();
+				let data = str.parse_to().unwrap();
 				Ok((rem, Value { data }))
 			}
 			Err(e) => Err(e),
