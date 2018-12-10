@@ -1,6 +1,8 @@
 use super::Byte;
 use nom::*;
 use std::iter;
+use super::data::int;
+use std::convert::TryFrom;
 
 const DISCARD: [Byte; 31] = [
 	0, 1, 2, 3, 4, 5, 6, 7, 8, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
@@ -77,6 +79,17 @@ where
 {
 	fn parse_to(&self) -> Option<R> {
 		self.bytes.parse_to()
+	}
+}
+
+impl<'a> ParseTo<int::Value> for Input<'a> {
+	fn parse_to(&self) -> Option<int::Value> {
+		let i: Option<u32> = self.parse_to();
+		if let Some(i) = i {
+			int::Value::try_from(i).ok()
+		} else {
+			None
+		}
 	}
 }
 
