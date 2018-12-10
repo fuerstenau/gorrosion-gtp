@@ -5,8 +5,6 @@ pub struct Value {
 	data: Vec<Byte>,
 }
 
-singleton_type!(String);
-
 impl From<Value> for MessagePart {
 	fn from(Value { data }: Value) -> MessagePart {
 		let msg = data;
@@ -14,9 +12,19 @@ impl From<Value> for MessagePart {
 	}
 }
 
-impl Data for Value {
-	type Type = Type;
+singleton_type!(String);
 
+impl Typed for Value {
+	type Type = Type;
+}
+
+impl HasType for Value {
+	fn has_type(&self, _t: Self::Type) -> bool {
+		true
+	}
+}
+
+impl Data for Value {
 	fn parse(i: Input, _t: Self::Type) -> IResult<Input, Self> {
 		let result = take_until_either!(i, b" \n");
 		match result {
@@ -26,9 +34,5 @@ impl Data for Value {
 			}
 			Err(e) => Err(e),
 		}
-	}
-
-	fn typed(&self) -> Self::Type {
-		Type::default()
 	}
 }

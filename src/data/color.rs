@@ -11,8 +11,6 @@ pub enum Color {
 
 pub type Value = Color;
 
-singleton_type!(Color);
-
 impl From<Value> for MessagePart {
 	fn from(col: Value) -> MessagePart {
 		let msg = match col {
@@ -23,9 +21,19 @@ impl From<Value> for MessagePart {
 	}
 }
 
-impl Data for Value {
-	type Type = Type;
+singleton_type!(Color);
 
+impl Typed for Value {
+	type Type = Type;
+}
+
+impl HasType for Value {
+	fn has_type(&self, _t: Self::Type) -> bool {
+		true
+	}
+}
+
+impl Data for Value {
 	fn parse(i: Input, _t: Self::Type) -> IResult<Input, Self> {
 		#[rustfmt::skip]
 		alt!(i,
@@ -38,9 +46,5 @@ impl Data for Value {
 				alt!(tag_no_case!("B") | tag_no_case!("black"))
 			)
 		)
-	}
-
-	fn typed(&self) -> Self::Type {
-		Type::default()
 	}
 }

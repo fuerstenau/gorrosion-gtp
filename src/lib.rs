@@ -1,4 +1,3 @@
-#![feature(try_from)]
 #![feature(stmt_expr_attributes)]
 // TODO: Disable once all the code lives
 #![allow(dead_code)]

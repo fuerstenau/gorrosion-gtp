@@ -12,8 +12,6 @@ pub enum Vertex {
 
 pub type Value = Vertex;
 
-singleton_type!(Vertex);
-
 impl From<Value> for MessagePart {
 	fn from(vert: Vertex) -> MessagePart {
 		let msg: Vec<Byte> = match vert {
@@ -32,9 +30,19 @@ impl From<Value> for MessagePart {
 	}
 }
 
-impl Data for Value {
-	type Type = Type;
+singleton_type!(Vertex);
 
+impl Typed for Value {
+	type Type = Type;
+}
+
+impl HasType for Value {
+	fn has_type(&self, _t: Self::Type) -> bool {
+		true
+	}
+}
+
+impl Data for Value {
 	fn parse(i: Input, _t: Self::Type) -> IResult<Input, Self> {
 		// Everything but “i” and “I”
 		const LEGAL_LETTERS: &[Byte] =
@@ -51,9 +59,5 @@ impl Data for Value {
 				))
 			)
 		)
-	}
-
-	fn typed(&self) -> Self::Type {
-		Type::default()
 	}
 }

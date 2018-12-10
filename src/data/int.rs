@@ -5,8 +5,6 @@ pub struct Value {
 	data: u32,
 }
 
-singleton_type!(Int);
-
 impl From<Value> for MessagePart {
 	fn from(Value { data }: Value) -> MessagePart {
 		let msg = Vec::from(data.to_string().as_bytes());
@@ -14,9 +12,19 @@ impl From<Value> for MessagePart {
 	}
 }
 
-impl Data for Value {
-	type Type = Type;
+singleton_type!(Int);
 
+impl Typed for Value {
+	type Type = Type;
+}
+
+impl HasType for Value {
+	fn has_type(&self, _t: Self::Type) -> bool {
+		true
+	}
+}
+
+impl Data for Value {
 	fn parse(i: Input, _t: Self::Type) -> IResult<Input, Self> {
 		let digits = nom::digit(i);
 		match digits {
@@ -26,9 +34,5 @@ impl Data for Value {
 			}
 			Err(e) => Err(e),
 		}
-	}
-
-	fn typed(&self) -> Self::Type {
-		Type::Int
 	}
 }

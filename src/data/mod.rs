@@ -9,16 +9,24 @@ struct MessagePart {
 
 // TODO: I'm unhappy with quite a few of the names.
 
-pub trait Data: Into<MessagePart> {
+pub trait Typed {
 	type Type;
+}
 
+// TODO: Add default impl<T> where T::Type: Default
+//       when Rust supports this.
+pub trait HasType: Typed {
+	fn has_type(&self, t: Self::Type) -> bool;
+}
+
+pub trait Data: Into<MessagePart> + HasType {
 	// TODO: Which kind of errors do we need to throw?
 	fn parse(i: Input, t: Self::Type) -> IResult<Input, Self>;
-	fn typed(&self) -> Self::Type;
 }
 
 macro_rules! singleton_type {
 	( $i: ident ) => {
+		#[derive(PartialEq, Eq)]
 		pub enum Type {
 			$i,
 		}

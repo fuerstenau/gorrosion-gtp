@@ -10,7 +10,6 @@ pub enum Boolean {
 }
 
 pub type Value = Boolean;
-singleton_type!(Boolean);
 
 impl From<Value> for MessagePart {
 	fn from(b: Value) -> MessagePart {
@@ -22,18 +21,24 @@ impl From<Value> for MessagePart {
 	}
 }
 
-impl Data for Value {
-	type Type = Type;
+singleton_type!(Boolean);
 
+impl Typed for Value {
+	type Type = Type;
+}
+
+impl HasType for Value {
+	fn has_type(&self, _t: Self::Type) -> bool {
+		true
+	}
+}
+
+impl Data for Value {
 	fn parse(i: Input, _t: Self::Type) -> IResult<Input, Self> {
 		#[rustfmt::skip]
 		alt!(i,
 			value!(Boolean::False, tag!("false")) |
 			value!(Boolean::True, tag!("true"))
 		)
-	}
-
-	fn typed(&self) -> Self::Type {
-		Type::default()
 	}
 }

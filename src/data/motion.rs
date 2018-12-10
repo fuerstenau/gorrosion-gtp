@@ -5,8 +5,6 @@ pub struct Value {
 	vertex: vertex::Value,
 }
 
-singleton_type!(Motion);
-
 impl From<Value> for MessagePart {
 	fn from(m: Value) -> MessagePart {
 		let mut msg = MessagePart::from(m.color).msg;
@@ -16,9 +14,19 @@ impl From<Value> for MessagePart {
 	}
 }
 
-impl Data for Value {
-	type Type = Type;
+singleton_type!(Motion);
 
+impl Typed for Value {
+	type Type = Type;
+}
+
+impl HasType for Value {
+	fn has_type(&self, _t: Self::Type) -> bool {
+		true
+	}
+}
+
+impl Data for Value {
 	fn parse(i: Input, _t: Self::Type) -> IResult<Input, Self> {
 		let parse_color =
 			|i| color::Value::parse(i, color::Type::default());
@@ -31,9 +39,5 @@ impl Data for Value {
 			vertex: call!(parse_vertex) >>
 			(Value { color, vertex })
 		)
-	}
-
-	fn typed(&self) -> Self::Type {
-		Type::default()
 	}
 }

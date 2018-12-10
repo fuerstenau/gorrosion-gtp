@@ -1,16 +1,5 @@
 use super::*;
 use nom::IResult;
-use std::convert::TryFrom;
-
-pub enum Type {
-	Int,
-	Float,
-	String,
-	Vertex,
-	Color,
-	Motion,
-	Boolean,
-}
 
 pub enum Value {
 	Int(int::Value),
@@ -36,6 +25,36 @@ impl From<Value> for MessagePart {
 	}
 }
 
+#[derive(PartialEq, Eq)]
+pub enum Type {
+	Int,
+	Float,
+	String,
+	Vertex,
+	Color,
+	Motion,
+	Boolean,
+}
+
+impl Typed for Value {
+	type Type = Type;
+}
+
+impl HasType for Value {
+	fn has_type(&self, t: Self::Type) -> bool {
+		#[rustfmt::skip]
+		t == type_of!(self;
+			Int,
+			Float,
+			String,
+			Vertex,
+			Color,
+			Motion,
+			Boolean
+		)
+	}
+}
+
 macro_rules! parse {
 	( $i:expr, $e:expr; $( ($t:ident, $m:ident) ), * ) => {
 		match $e {
@@ -48,8 +67,6 @@ macro_rules! parse {
 }
 
 impl Data for Value {
-	type Type = Type;
-
 	fn parse(i: Input, t: Self::Type) -> IResult<Input, Self> {
 		#[rustfmt::skip]
 		parse!(i, t;
@@ -62,19 +79,4 @@ impl Data for Value {
 			(Boolean, boolean)
 		)
 	}
-
-	fn typed(&self) -> Self::Type {
-		#[rustfmt::skip]
-		type_of!(self;
-			Int,
-			Float,
-			String,
-			Vertex,
-			Color,
-			Motion,
-			Boolean
-		)
-	}
 }
-
-pub trait SimpleEntity: Data + TryFrom<Value> + Into<Value> {}
