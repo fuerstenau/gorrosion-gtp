@@ -48,6 +48,6 @@ Until then, feel free to e-mail me with questions.
 [crates.io-link]: https://crates.io/crates/gorrosion-gtp
 [crates.io-badge]: https://img.shields.io/crates/v/gorrosion-gtp.svg
 [docs.rs-link]: https://docs.rs/gorrosion-gtp
-[docs.rs-badge]: https://docs.rs/gorrosion/badge-gtp.svg
+[docs.rs-badge]: https://docs.rs/gorrosion-gtp/badge.svg
 [gtp-link]: http://www.lysator.liu.se/~gunnar/gtp/
 [gorrosion]: https://crates.ion/crates/gorrosion
