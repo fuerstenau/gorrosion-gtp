@@ -23,7 +23,53 @@ pub enum Collection {
 
 pub type Value = Collection;
 
+impl Value {
+	fn new(head: simple_entity::Value, tail: Value) -> Value {
+		Collection::Collection(head, Box::new(tail))
+	}
+}
+
 pub enum Type {
 	Empty,
 	Collection(simple_entity::Type, Box<Type>),
+}
+
+impl Typed for Value {
+	type Type = Type;
+}
+
+impl HasType for Value {
+	fn has_type(&self, t: &Self::Type) -> bool {
+		match (self, t) {
+			(Collection::Empty, Type::Empty) => true,
+			(
+				Collection::Collection(val, col),
+				Type::Collection(head, tail),
+			) => val.has_type(head) & col.has_type(&*tail),
+			_ => false,
+		}
+	}
+}
+
+impl Data for Value {
+	fn parse(i: Input, t: Self::Type) -> IResult<Input, Self> {
+		match t {
+			Type::Empty => Ok((i, Collection::Empty)),
+			Type::Collection(head, tail) => {
+				let parse_head = |i| {
+					simple_entity::Value::parse(i, head)
+				};
+				#[rustfmt::skip]
+				let parse_tail = |i| {
+					collection::Value::parse(i, *tail)
+				};
+				#[rustfmt::skip]
+				do_parse!(i,
+					head: call!(parse_head) >>
+					tail: call!(parse_tail) >>
+					(Value:new(head, tail))
+				)
+			}
+		}
+	}
 }

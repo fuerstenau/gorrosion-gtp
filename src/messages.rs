@@ -73,6 +73,21 @@ impl From<Boolean> for MessagePart {
 	}
 }
 
+impl From<Collection> for MessagePart {
+	fn from(c: Collection) -> MessagePart {
+		let msg = match c {
+			Collection::Empty => Vec::new(),
+			Collection::Collection(head, tail) => {
+				let mut msg = b" ".to_vec();
+				msg.append(&mut MessagePart::from(head).msg);
+				msg.append(&mut MessagePart::from(*tail).msg);
+				msg
+			}
+		};
+		MessagePart { msg }
+	}
+}
+
 pub struct CommandMessage {
 	id: Option<Int>,
 	command_name: String,

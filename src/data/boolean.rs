@@ -16,7 +16,11 @@ pub type Value = Boolean;
 
 impl From<bool> for Value {
 	fn from(b: bool) -> Value {
-		if b { Boolean::True } else { Boolean::False }
+		if b {
+			Boolean::True
+		} else {
+			Boolean::False
+		}
 	}
 }
 
@@ -36,7 +40,7 @@ impl Typed for Value {
 }
 
 impl HasType for Value {
-	fn has_type(&self, _t: Self::Type) -> bool {
+	fn has_type(&self, _t: &Self::Type) -> bool {
 		true
 	}
 }

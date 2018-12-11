@@ -1,4 +1,4 @@
-use super::{simple_entity, collection, list, alternatives};
+use super::{alternatives, collection, list, simple_entity};
 
 pub enum Value {
 	SimpleEntity(simple_entity::Value),

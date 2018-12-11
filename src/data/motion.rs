@@ -22,7 +22,7 @@ impl Typed for Value {
 }
 
 impl HasType for Value {
-	fn has_type(&self, _t: Self::Type) -> bool {
+	fn has_type(&self, _t: &Self::Type) -> bool {
 		true
 	}
 }

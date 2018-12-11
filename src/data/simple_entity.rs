@@ -41,9 +41,9 @@ impl Typed for Value {
 }
 
 impl HasType for Value {
-	fn has_type(&self, t: Self::Type) -> bool {
+	fn has_type(&self, t: &Self::Type) -> bool {
 		#[rustfmt::skip]
-		t == type_of!(self;
+		t == &type_of!(self;
 			Int,
 			Float,
 			String,

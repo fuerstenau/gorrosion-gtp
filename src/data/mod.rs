@@ -1,7 +1,7 @@
+use super::messages::MessagePart;
 use super::Byte;
 use super::Input;
 use nom::IResult;
-use super::messages::MessagePart;
 
 // TODO: I'm unhappy with quite a few of the names.
 
@@ -12,7 +12,7 @@ pub trait Typed {
 // TODO: Add default impl<T> where T::Type: Default
 //       when Rust supports this.
 pub trait HasType: Typed {
-	fn has_type(&self, t: Self::Type) -> bool;
+	fn has_type(&self, t: &Self::Type) -> bool;
 }
 
 pub trait Data: Into<MessagePart> + HasType {
@@ -46,20 +46,20 @@ macro_rules! type_of {
 }
 
 // Simple Entities
-pub mod int;
+pub mod boolean;
+pub mod color;
 pub mod float;
+pub mod int;
+pub mod motion;
 pub mod string;
 pub mod vertex;
-pub mod color;
-pub mod motion;
-pub mod boolean;
 
 // Compound Entities
+pub mod alternatives;
 pub mod collection;
 pub mod list;
-pub mod alternatives;
 pub mod multiline_list;
 
 // Internal helpers
-mod simple_entity;
 mod one_liner;
+mod simple_entity;

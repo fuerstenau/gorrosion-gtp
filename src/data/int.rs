@@ -1,5 +1,5 @@
-use nom::ParseTo;
 use super::*;
+use nom::ParseTo;
 use std::convert::TryFrom;
 
 pub struct Value {
@@ -8,8 +8,7 @@ pub struct Value {
 
 pub struct TryFromIntError(());
 
-impl TryFrom<u32> for Value
-{
+impl TryFrom<u32> for Value {
 	type Error = TryFromIntError;
 
 	fn try_from(data: u32) -> Result<Self, Self::Error> {
@@ -44,7 +43,7 @@ impl Typed for Value {
 }
 
 impl HasType for Value {
-	fn has_type(&self, _t: Self::Type) -> bool {
+	fn has_type(&self, _t: &Self::Type) -> bool {
 		true
 	}
 }
