@@ -4,6 +4,7 @@ use super::*;
 // by the weird semi-support of Rust for enums.
 // If we want to export it publicly under some name,
 // we have to use this name in the initial declaration already.
+/// The colours of the two opponents, either `Black` or `White`.
 #[derive(Clone, Copy)]
 pub enum Color {
 	Black,

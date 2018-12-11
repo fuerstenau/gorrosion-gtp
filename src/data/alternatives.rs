@@ -7,6 +7,6 @@ use super::*;
 pub type Value = simple_entity::Value;
 
 pub struct Type {
-	left: simple_entity::Type,
-	right: simple_entity::Type,
+	first: simple_entity::Type,
+	second: simple_entity::Type,
 }

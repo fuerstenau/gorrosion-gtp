@@ -1,7 +1,8 @@
 use super::*;
 
 pub struct Value {
-	data: Vec<simple_entity::Value>,
+	t: collection::Type,
+	data: Vec<collection::Value>,
 }
 
-pub type Type = simple_entity::Type;
+pub type Type = collection::Type;

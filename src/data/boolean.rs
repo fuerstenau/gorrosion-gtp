@@ -4,6 +4,9 @@ use super::*;
 // by the weird semi-support of Rust for enums.
 // If we want to export it publicly under some name,
 // we have to use this name in the initial declaration already.
+/// A boolean value, either `True` or `False`.
+///
+/// Most easily used, resp. provided, by casting to, resp. from, `bool`.
 pub enum Boolean {
 	False,
 	True,

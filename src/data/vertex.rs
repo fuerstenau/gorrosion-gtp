@@ -5,9 +5,19 @@ use nom::ParseTo;
 // by the weird semi-support of Rust for enums.
 // If we want to export it publicly under some name,
 // we have to use this name in the initial declaration already.
+/// A position where to play.
+/// Either coordinates of a vertex on the board or `Pass`.
+///
+/// The spec says
+/// > A vertex is a board coordinate
+/// > consisting of one letter and one number
+/// > [or `Pass`].
+/// Vertices are not case sensitive.
+/// Examples: “B13”, “j11”.
 #[derive(Clone, Copy)]
 pub enum Vertex {
 	Pass,
+	// TODO: Introduce types LetterCoord and NumberCoord?
 	Coord(char, u8),
 }
 
