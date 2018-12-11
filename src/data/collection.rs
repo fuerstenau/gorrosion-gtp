@@ -65,8 +65,8 @@ impl Data for Value {
 				};
 				#[rustfmt::skip]
 				do_parse!(i,
-					head: call!(parse_head) >>
 					tag!(b" ") >>
+					head: call!(parse_head) >>
 					tail: call!(parse_tail) >>
 					(Value::new(head, tail))
 				)
