@@ -1,4 +1,4 @@
-use super::{Byte, Input};
+use super::Byte;
 use std::iter;
 
 const DISCARD: [Byte; 31] = [
@@ -9,8 +9,27 @@ const SPACE: [Byte; 2] = [9, 32]; // " \t"
 const NEWLINE: Byte = 10; // "\n"
 const COMMENT: Byte = 35; // "#"
 
+#[derive(Clone)]
+pub struct Input<'a> {
+	bytes: &'a [Byte],
+}
+
+impl<'a> Input<'a> {
+	pub fn bytes(&self) -> &'a [Byte] {
+		self.bytes
+	}
+}
+
+impl<'a> From<&'a [Byte]> for Input<'a> {
+	fn from(bytes: &'a [Byte]) -> Self {
+		Input { bytes }
+	}
+}
+
+impl<'a> super::Input<'a> for Input<'a> {}
+
 // FIXME: Convert tab to space
-pub struct InputIterator<'a> {
+pub struct Iterator<'a> {
 	bytes: &'a [Byte],
 	/// One more than the position of the last element that was output.
 	/// If we are not at the end of the iteration
@@ -19,12 +38,12 @@ pub struct InputIterator<'a> {
 	next: usize,
 }
 
-impl<'a> InputIterator<'a> {
-	/*	pub fn new(i: &Input<'a>) -> Self {
+impl<'a> Iterator<'a> {
+	pub fn new(i: &Input<'a>) -> Self {
 		let bytes = i.bytes;
 		let next = 0;
-		InputIterator { bytes, next }
-	}*/
+		Iterator { bytes, next }
+	}
 
 	pub fn last_pos(&self) -> usize {
 		self.next - 1
@@ -35,7 +54,7 @@ impl<'a> InputIterator<'a> {
 	}
 }
 
-impl<'a> iter::Iterator for InputIterator<'a> {
+impl<'a> iter::Iterator for Iterator<'a> {
 	type Item = Byte;
 
 	fn next(&mut self) -> Option<Self::Item> {

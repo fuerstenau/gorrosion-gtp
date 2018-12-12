@@ -1,35 +1,19 @@
 //! Implement the traits defined by nom
 //! so that we can use nom to write our parsers.
-//! Most of these are simple wrappers,
-//! the GTP specific (pre-)processing happens in the submodule `iter`.
+//!
+//! These are simply wrappers
+//! (but not all are simple wrappers)
+//! around the interface exposed by the sister modules engine and controller.
+//! All GTP specific (pre-)processing happens in these modules.
 
-use super::{Byte, Input};
+use super::{Byte, controller, for_t};
 use data::int;
 use nom::*;
 use std::convert::TryFrom;
 use std::iter::Enumerate;
 
-mod iter;
-
-use self::iter::InputIterator;
-
 // TODO: Later on, `T` will be either `ControllerInput` or `EngineInput`
-#[derive(Debug, Clone, Copy)]
-struct T<'a> {
-	botes: &'a [Byte],
-}
-
-impl<'a> From<&'a [u8]> for T<'a> {
-	fn from(botes: &'a [u8]) -> T<'a> {
-		T { botes }
-	}
-}
-
-impl<'a> T<'a> {
-	fn bytes(&self) -> &'a [Byte] {
-		self.botes
-	}
-}
+type T<'a> = controller::Input<'a>;
 
 impl<'a> AtEof for T<'a> {
 	/// While it might be possible in some settings
@@ -101,6 +85,9 @@ impl<'a> ParseTo<int::Value> for T<'a> {
 	}
 }
 
+impl<'a> for_t::Slice for T<'a> {}
+impl<'a> for_t::ParseTo for T<'a> {}
+
 // TODO: s/S/T/g once s/T/$T/g happened
 impl<'a, S> Compare<S> for T<'a>
 where
@@ -119,15 +106,14 @@ impl<'a> InputIter for T<'a> {
 	type Item = Byte;
 	type RawItem = Byte;
 	type Iter = Enumerate<Self::IterElem>;
-	type IterElem = iter::InputIterator<'a>;
+	type IterElem = controller::Iterator<'a>;
 
 	fn iter_indices(&self) -> Self::Iter {
 		self.iter_elements().enumerate()
 	}
 
 	fn iter_elements(&self) -> Self::IterElem {
-		unimplemented!()
-		//InputIterator::new(self)
+		controller::Iterator::new(self)
 	}
 
 	fn position<P>(&self, predicate: P) -> Option<usize>
