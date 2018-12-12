@@ -1,5 +1,4 @@
 use super::*;
-use nom::ParseTo;
 use std::convert::TryFrom;
 
 pub struct Value {

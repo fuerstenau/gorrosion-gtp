@@ -1,5 +1,4 @@
 use super::*;
-use nom::ParseTo;
 
 // This additional layer of indirection brought to you
 // by the weird semi-support of Rust for enums.
@@ -38,8 +37,8 @@ impl HasType for Value {
 impl Data for Value {
 	fn parse<'a, I: Input<'a>>(i: I, _t: Self::Type) -> IResult<I, Self> {
 		// Everything but “i” and “I”
-		const LEGAL_LETTERS: &[Byte] =
-			b"abcdefghjklmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ";
+		const LEGAL_LETTERS: & str =
+			"abcdefghjklmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ";
 		#[rustfmt::skip]
 		alt!(i,
 			value!(Vertex::Pass, tag_no_case!("pass")) |

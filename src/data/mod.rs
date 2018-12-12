@@ -1,6 +1,5 @@
 use super::messages::MessagePart;
-use super::Byte;
-use super::Input;
+use super::input::Input;
 use nom::IResult;
 
 // TODO: I'm unhappy with quite a few of the names.
