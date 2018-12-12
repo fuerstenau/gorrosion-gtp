@@ -1,4 +1,4 @@
-use super::{Input, Byte};
+use super::{Byte, Input};
 use std::iter;
 
 const DISCARD: [Byte; 31] = [
@@ -20,11 +20,11 @@ pub struct InputIterator<'a> {
 }
 
 impl<'a> InputIterator<'a> {
-	pub fn new(i: &Input<'a>) -> Self {
+	/*	pub fn new(i: &Input<'a>) -> Self {
 		let bytes = i.bytes;
 		let next = 0;
 		InputIterator { bytes, next }
-	}
+	}*/
 
 	pub fn last_pos(&self) -> usize {
 		self.next - 1

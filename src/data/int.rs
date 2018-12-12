@@ -50,7 +50,7 @@ impl HasType for Value {
 
 impl Data for Value {
 	// FIXME: Ensure data < 2^31
-	fn parse(i: Input, _t: Self::Type) -> IResult<Input, Self> {
+	fn parse<'a, I: Input<'a>>(i: I, _t: Self::Type) -> IResult<I, Self> {
 		let digits = nom::digit(i);
 		match digits {
 			Ok((rem, str)) => {

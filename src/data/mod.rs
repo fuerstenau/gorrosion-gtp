@@ -15,13 +15,13 @@ pub trait HasType: Typed {
 	fn has_type(&self, t: &Self::Type) -> bool;
 }
 
-pub trait Data: Into<MessagePart> + HasType {
+pub trait Data: Into<MessagePart> + Typed {
 	// TODO: Which kind of errors do we need to throw?
-	fn parse(i: Input, t: Self::Type) -> IResult<Input, Self>;
+	fn parse<'a, I: Input<'a>>(i: I, t: Self::Type) -> IResult<I, Self>;
 }
 
 macro_rules! singleton_type {
-	( $i: ident ) => {
+	( $i:ident ) => {
 		#[derive(PartialEq, Eq)]
 		pub enum Type {
 			$i,

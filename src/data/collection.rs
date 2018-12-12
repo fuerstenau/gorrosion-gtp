@@ -52,7 +52,7 @@ impl HasType for Value {
 }
 
 impl Data for Value {
-	fn parse(i: Input, t: Self::Type) -> IResult<Input, Self> {
+	fn parse<'a, I: Input<'a>>(i: I, t: Self::Type) -> IResult<I, Self> {
 		match t {
 			Type::Empty => Ok((i, Collection::Empty)),
 			Type::Collection(head, tail) => {

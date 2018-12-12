@@ -67,7 +67,7 @@ macro_rules! parse {
 }
 
 impl Data for Value {
-	fn parse(i: Input, t: Self::Type) -> IResult<Input, Self> {
+	fn parse<'a, I: Input<'a>>(i: I, t: Self::Type) -> IResult<I, Self> {
 		#[rustfmt::skip]
 		parse!(i, t;
 			(Int, int),

@@ -3,17 +3,35 @@
 //! Most of these are simple wrappers,
 //! the GTP specific (pre-)processing happens in the submodule `iter`.
 
+use super::{Byte, Input};
+use data::int;
 use nom::*;
-use super::{Input, Byte};
-use ::data::int;
-use std::iter::Enumerate;
 use std::convert::TryFrom;
+use std::iter::Enumerate;
 
 mod iter;
 
 use self::iter::InputIterator;
 
-impl<'a> AtEof for Input<'a> {
+// TODO: Later on, `T` will be either `ControllerInput` or `EngineInput`
+#[derive(Debug, Clone, Copy)]
+struct T<'a> {
+	botes: &'a [Byte],
+}
+
+impl<'a> From<&'a [u8]> for T<'a> {
+	fn from(botes: &'a [u8]) -> T<'a> {
+		T { botes }
+	}
+}
+
+impl<'a> T<'a> {
+	fn bytes(&self) -> &'a [Byte] {
+		self.botes
+	}
+}
+
+impl<'a> AtEof for T<'a> {
 	/// While it might be possible in some settings
 	/// to determine that the connection has closed
 	/// and no further data may arrive,
@@ -27,52 +45,52 @@ impl<'a> AtEof for Input<'a> {
 	}
 }
 
-impl<'a> InputLength for Input<'a> {
+impl<'a> InputLength for T<'a> {
 	fn input_len(&self) -> usize {
-		self.bytes.len()
+		self.bytes().len()
 	}
 }
 
-impl<'a> InputTake for Input<'a> {
+impl<'a> InputTake for T<'a> {
 	fn take(&self, count: usize) -> Self {
-		let bytes = &self.bytes[0..count];
-		Input { bytes }
+		let bytes = &self.bytes()[0..count];
+		T::from(bytes)
 	}
 
 	fn take_split(&self, count: usize) -> (Self, Self) {
-		let (prefix, suffix) = self.bytes.split_at(count);
-		let prefix = Input::from(prefix);
-		let suffix = Input::from(suffix);
+		let (prefix, suffix) = self.bytes().split_at(count);
+		let prefix = T::from(prefix);
+		let suffix = T::from(suffix);
 		(suffix, prefix)
 	}
 }
 
-impl<'a, R> Slice<R> for Input<'a>
+impl<'a, R> Slice<R> for T<'a>
 where
 	&'a [Byte]: Slice<R>,
 {
 	fn slice(&self, range: R) -> Self {
-		let bytes = self.bytes.slice(range);
-		Input { bytes }
+		let bytes = self.bytes().slice(range);
+		T::from(bytes)
 	}
 }
 
-impl<'a> Offset for Input<'a> {
+impl<'a> Offset for T<'a> {
 	fn offset(&self, second: &Self) -> usize {
-		self.bytes.offset(second.bytes)
+		self.bytes().offset(second.bytes())
 	}
 }
 
-impl<'a, R> ParseTo<R> for Input<'a>
+impl<'a, R> ParseTo<R> for T<'a>
 where
 	&'a [Byte]: ParseTo<R>,
 {
 	fn parse_to(&self) -> Option<R> {
-		self.bytes.parse_to()
+		self.bytes().parse_to()
 	}
 }
 
-impl<'a> ParseTo<int::Value> for Input<'a> {
+impl<'a> ParseTo<int::Value> for T<'a> {
 	fn parse_to(&self) -> Option<int::Value> {
 		let i: Option<u32> = self.parse_to();
 		if let Some(i) = i {
@@ -83,20 +101,21 @@ impl<'a> ParseTo<int::Value> for Input<'a> {
 	}
 }
 
-impl<'a, T> Compare<T> for Input<'a>
+// TODO: s/S/T/g once s/T/$T/g happened
+impl<'a, S> Compare<S> for T<'a>
 where
-	&'a [Byte]: Compare<T>,
+	&'a [Byte]: Compare<S>,
 {
-	fn compare(&self, t: T) -> CompareResult {
-		self.bytes.compare(t)
+	fn compare(&self, t: S) -> CompareResult {
+		self.bytes().compare(t)
 	}
 
-	fn compare_no_case(&self, t: T) -> CompareResult {
-		self.bytes.compare_no_case(t)
+	fn compare_no_case(&self, t: S) -> CompareResult {
+		self.bytes().compare_no_case(t)
 	}
 }
 
-impl<'a> InputIter for Input<'a> {
+impl<'a> InputIter for T<'a> {
 	type Item = Byte;
 	type RawItem = Byte;
 	type Iter = Enumerate<Self::IterElem>;
@@ -107,7 +126,8 @@ impl<'a> InputIter for Input<'a> {
 	}
 
 	fn iter_elements(&self) -> Self::IterElem {
-		InputIterator::new(self)
+		unimplemented!()
+		//InputIterator::new(self)
 	}
 
 	fn position<P>(&self, predicate: P) -> Option<usize>
@@ -140,4 +160,4 @@ impl<'a> InputIter for Input<'a> {
 }
 
 /// This allows us to use a default implementation for InputTakeAtPosition.
-impl<'a> UnspecializedInput for Input<'a> {}
+impl<'a> UnspecializedInput for T<'a> {}

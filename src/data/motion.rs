@@ -28,7 +28,7 @@ impl HasType for Value {
 }
 
 impl Data for Value {
-	fn parse(i: Input, _t: Self::Type) -> IResult<Input, Self> {
+	fn parse<'a, I: Input<'a>>(i: I, _t: Self::Type) -> IResult<I, Self> {
 		let parse_color =
 			|i| color::Value::parse(i, color::Type::default());
 		let parse_vertex =
