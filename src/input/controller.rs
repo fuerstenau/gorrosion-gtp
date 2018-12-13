@@ -1,13 +1,7 @@
 use super::Byte;
+use super::{discard, coerce_whitespace};
 use std::iter;
 
-const DISCARD: [Byte; 31] = [
-	0, 1, 2, 3, 4, 5, 6, 7, 8, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
-	22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 127,
-]; // “Control characters”: 0 – 8, 11 – 31, 127
-const SPACE: [Byte; 2] = [9, 32]; // " \t"
-const NEWLINE: Byte = 10; // "\n"
-const COMMENT: Byte = 35; // "#"
 
 #[derive(Clone)]
 pub struct Input<'a> {
@@ -48,10 +42,6 @@ impl<'a> Iterator<'a> {
 	pub fn last_pos(&self) -> usize {
 		self.next - 1
 	}
-
-	fn discard(&self, pos: usize) -> bool {
-		DISCARD.contains(&self.bytes[pos])
-	}
 }
 
 impl<'a> iter::Iterator for Iterator<'a> {
@@ -60,13 +50,13 @@ impl<'a> iter::Iterator for Iterator<'a> {
 	fn next(&mut self) -> Option<Self::Item> {
 		if self.next >= self.bytes.len() {
 			None
-		} else if self.discard(self.next) {
+		} else if discard(&self.bytes[self.next]) {
 			self.next += 1;
 			self.next()
 		} else {
 			let res = self.bytes[self.next];
 			self.next += 1;
-			Some(res)
+			Some(coerce_whitespace(res))
 		}
 	}
 }
