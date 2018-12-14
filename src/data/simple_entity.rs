@@ -1,5 +1,7 @@
 use super::*;
 use nom::IResult;
+use std::io;
+use super::super::messages::Writable;
 
 pub enum Value {
 	Int(int::Value),
@@ -11,16 +13,16 @@ pub enum Value {
 	Boolean(boolean::Value),
 }
 
-impl From<Value> for MessagePart {
-	fn from(val: Value) -> MessagePart {
-		match val {
-			Value::Int(v) => MessagePart::from(v),
-			Value::Float(v) => MessagePart::from(v),
-			Value::String(v) => MessagePart::from(v),
-			Value::Vertex(v) => MessagePart::from(v),
-			Value::Color(v) => MessagePart::from(v),
-			Value::Motion(v) => MessagePart::from(v),
-			Value::Boolean(v) => MessagePart::from(v),
+impl Writable for Value {
+	fn write_gtp(&self, f: &mut impl io::Write) -> io::Result<()> {
+		match self {
+			Value::Int(v) => v.write_gtp(f),
+			Value::Float(v) => v.write_gtp(f),
+			Value::String(v) => v.write_gtp(f),
+			Value::Vertex(v) => v.write_gtp(f),
+			Value::Color(v) => v.write_gtp(f),
+			Value::Motion(v) => v.write_gtp(f),
+			Value::Boolean(v) => v.write_gtp(f),
 		}
 	}
 }
