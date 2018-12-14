@@ -1,4 +1,6 @@
 use super::*;
+use std::io;
+use super::super::messages::Writable;
 
 pub struct Value {
 	color: color::Value,
@@ -12,6 +14,14 @@ impl Value {
 
 	pub fn vertex(&self) -> &vertex::Value {
 		&self.vertex
+	}
+}
+
+impl Writable for Value {
+	fn write_gtp(&self, f: &mut impl io::Write) -> io::Result<()> {
+		self.color.write_gtp(f)?;
+		write!(f, " ")?;
+		self.vertex.write_gtp(f)
 	}
 }
 

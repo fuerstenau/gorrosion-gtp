@@ -32,11 +32,19 @@ pub type Float = float::Value;
 /// to reliably cast this into anything but a `Vec<Byte>`.
 pub type String = string::Value;
 
-// Documentation in data::vertex
-pub use self::vertex::Vertex;
+/// A position where to play.
+/// Either coordinates of a vertex on the board or `Pass`.
+///
+/// The spec says
+/// > A vertex is a board coordinate
+/// > consisting of one letter and one number
+/// > [or `Pass`].
+/// Vertices are not case sensitive.
+/// Examples: “B13”, “j11”.
+pub type Vertex = vertex::Value;
 
-// Documentation in data::color
-pub use self::color::Color;
+/// The colours of the two opponents, either `Black` or `White`.
+pub type Color = self::color::Value;
 
 /// A move that can be made.
 ///
@@ -45,11 +53,23 @@ pub use self::color::Color;
 /// Resignation can not be represented as a `Move`.
 pub type Move = motion::Value;
 
-// Documentation in data::boolean
-pub use self::boolean::Boolean;
+/// A boolean value, either `True` or `False`.
+///
+/// Most easily used, resp. provided, by casting to, resp. from, `bool`.
+pub type Boolean =  self::boolean::Value;
 
-// Documentation in data::collection
-pub use self::collection::Collection;
+/// A heterogenous tuple.
+///
+/// The spec says
+/// > [A pair `(x, y)` where]
+/// > `x` and `y` may be any combination of simple entities.
+/// > The construction can be generalized
+/// > to any fixed number of entities.
+///
+/// I was not able to determine
+/// whether tuples of length 0 and 1 are allowed
+/// so we do the simpler thing and include them in our abstraction.
+pub type Collection = self::collection::Value;
 
 /// A homogeneous list of `Collection`s.
 ///

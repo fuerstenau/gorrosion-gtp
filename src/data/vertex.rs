@@ -1,26 +1,41 @@
 use super::*;
+use std::io;
+use super::super::messages::Writable;
 
-// This additional layer of indirection brought to you
-// by the weird semi-support of Rust for enums.
-// If we want to export it publicly under some name,
-// we have to use this name in the initial declaration already.
-/// A position where to play.
-/// Either coordinates of a vertex on the board or `Pass`.
-///
-/// The spec says
-/// > A vertex is a board coordinate
-/// > consisting of one letter and one number
-/// > [or `Pass`].
-/// Vertices are not case sensitive.
-/// Examples: “B13”, “j11”.
+// Everything but “i” and “I”
+const LEGAL_LETTERS: &str =
+	"abcdefghjklmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ";
+
 #[derive(Clone, Copy)]
-pub enum Vertex {
+pub enum Value {
 	Pass,
 	// TODO: Introduce types LetterCoord and NumberCoord?
 	Coord(char, u8),
 }
 
-pub type Value = Vertex;
+impl Value {
+	pub fn pass() -> Value {
+		Value::Pass
+	}
+
+	pub fn new(c: char, n: u8) -> Value {
+		assert!(LEGAL_LETTERS.contains(c));
+		assert!((0 < n) && (n <= 25));
+		Value::Coord(c, n)
+	}
+}
+
+impl Writable for Value {
+	fn write_gtp(&self, f: &mut impl io::Write) -> io::Result<()> {
+		match self {
+			Value::Pass => write!(f, "pass"),
+			Value::Coord(l, n) => {
+				write!(f, "{}", l)?;
+				write!(f, "{}", n)
+			},
+		}
+	}
+}
 
 singleton_type!(Vertex);
 
@@ -36,16 +51,13 @@ impl HasType for Value {
 
 impl Data for Value {
 	fn parse<'a, I: Input<'a>>(i: I, _t: Self::Type) -> IResult<I, Self> {
-		// Everything but “i” and “I”
-		const LEGAL_LETTERS: & str =
-			"abcdefghjklmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ";
 		#[rustfmt::skip]
 		alt!(i,
-			value!(Vertex::Pass, tag_no_case!("pass")) |
+			value!(Value::pass(), tag_no_case!("pass")) |
 			do_parse!(
 				letter: one_of!(LEGAL_LETTERS) >>
 				digits: call!(nom::digit) >>
-				(Vertex::Coord(
+				(Value::new(
 					letter,
 					digits.parse_to().unwrap(),
 				))

@@ -44,6 +44,7 @@ fn coerce_whitespace(b: Byte) -> Byte {
 /// comprising all the traits that are currently used
 /// to parse the inputs.
 /// Only engine::Input and controller::Input should implement this trait.
+#[doc(hidden)]
 pub trait Input<'a>
 where
 	Self: From<&'a [u8]>,

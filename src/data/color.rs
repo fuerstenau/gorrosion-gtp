@@ -1,17 +1,21 @@
 use super::*;
+use std::io;
+use super::super::messages::Writable;
 
-// This additional layer of indirection brought to you
-// by the weird semi-support of Rust for enums.
-// If we want to export it publicly under some name,
-// we have to use this name in the initial declaration already.
-/// The colours of the two opponents, either `Black` or `White`.
 #[derive(Clone, Copy)]
-pub enum Color {
+pub enum Value {
 	Black,
 	White,
 }
 
-pub type Value = Color;
+impl Writable for Value {
+	fn write_gtp(&self, f: &mut impl io:: Write) -> io::Result<()> {
+		match self {
+			Value::Black => write!(f, "Black"),
+			Value::White => write!(f, "White"),
+		}
+	}
+}
 
 singleton_type!(Color);
 
@@ -30,11 +34,11 @@ impl Data for Value {
 		#[rustfmt::skip]
 		alt!(i,
 			value!(
-				Color::White,
+				Value::White,
 				alt!(tag_no_case!("W") | tag_no_case!("white"))
 			) |
 			value!(
-				Color::Black,
+				Value::Black,
 				alt!(tag_no_case!("B") | tag_no_case!("black"))
 			)
 		)

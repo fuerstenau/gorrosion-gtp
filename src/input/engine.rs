@@ -10,6 +10,7 @@ pub struct Input<'a> {
 }
 
 impl<'a> Input<'a> {
+	#[doc(hidden)]
 	pub fn bytes(&self) -> &'a [Byte] {
 		self.bytes
 	}

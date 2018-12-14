@@ -1,5 +1,7 @@
 use super::*;
 use std::convert::TryFrom;
+use std::io;
+use super::super::messages::Writable;
 
 pub struct Value {
 	data: u32,
@@ -32,6 +34,12 @@ impl From<Value> for i32 {
 		// a Value with data >= 2^31
 		// in the first place.
 		i32::try_from(v.data).unwrap()
+	}
+}
+
+impl Writable for Value {
+	fn write_gtp(&self, f: &mut impl io::Write) -> io::Result<()> {
+		write!(f, "{}", self.data)
 	}
 }
 

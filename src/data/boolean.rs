@@ -1,25 +1,18 @@
 use super::*;
+use std::io;
+use super::super::messages::Writable;
 
-// This additional layer of indirection brought to you
-// by the weird semi-support of Rust for enums.
-// If we want to export it publicly under some name,
-// we have to use this name in the initial declaration already.
-/// A boolean value, either `True` or `False`.
-///
-/// Most easily used, resp. provided, by casting to, resp. from, `bool`.
-pub enum Boolean {
+pub enum Value {
 	False,
 	True,
 }
 
-pub type Value = Boolean;
-
 impl From<bool> for Value {
 	fn from(b: bool) -> Value {
 		if b {
-			Boolean::True
+			Value::True
 		} else {
-			Boolean::False
+			Value::False
 		}
 	}
 }
@@ -27,8 +20,17 @@ impl From<bool> for Value {
 impl From<Value> for bool {
 	fn from(v: Value) -> bool {
 		match v {
-			Boolean::True => true,
-			Boolean::False => false,
+			Value::True => true,
+			Value::False => false,
+		}
+	}
+}
+
+impl Writable for Value {
+	fn write_gtp(&self, f: &mut impl io::Write) -> io::Result<()> {
+		match self {
+			Value::False => write!(f, "false"),
+			Value::True => write!(f, "true"),
 		}
 	}
 }
@@ -49,8 +51,8 @@ impl Data for Value {
 	fn parse<'a, I: Input<'a>>(i: I, _t: Self::Type) -> IResult<I, Self> {
 		#[rustfmt::skip]
 		alt!(i,
-			value!(Boolean::False, tag!("false")) |
-			value!(Boolean::True, tag!("true"))
+			value!(Value::False, tag!("false")) |
+			value!(Value::True, tag!("true"))
 		)
 	}
 }

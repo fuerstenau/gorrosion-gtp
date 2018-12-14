@@ -1,4 +1,6 @@
 use super::*;
+use std::io;
+use super::super::messages::Writable;
 
 type Byte = u8;
 
@@ -9,6 +11,12 @@ pub struct Value {
 impl From<Value> for Vec<Byte> {
 	fn from(v: Value) -> Vec<Byte> {
 		v.data
+	}
+}
+
+impl Writable for Value {
+	fn write_gtp(&self, f: &mut impl io::Write) -> io::Result<()> {
+		f.write_all(&self.data)
 	}
 }
 

@@ -1,4 +1,6 @@
 use super::*;
+use super::super::messages::Writable;
+use std::io;
 
 pub struct Value {
 	data: f32,
@@ -13,6 +15,12 @@ impl From<f32> for Value {
 impl From<Value> for f32 {
 	fn from(v: Value) -> f32 {
 		v.data
+	}
+}
+
+impl Writable for Value {
+	fn write_gtp(&self, f: &mut impl io::Write) -> io::Result<()> {
+		write!(f, "{}", self.data)
 	}
 }
 
