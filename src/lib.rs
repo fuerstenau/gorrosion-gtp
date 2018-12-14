@@ -19,8 +19,7 @@ mod data;
 mod input;
 
 pub mod gtp_type;
-
-mod messages;
+pub mod messages;
 
 mod command {
 	use super::gtp_type::*;
