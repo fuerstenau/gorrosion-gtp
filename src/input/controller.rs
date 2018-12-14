@@ -22,7 +22,6 @@ impl<'a> From<&'a [Byte]> for Input<'a> {
 
 impl<'a> super::Input<'a> for Input<'a> {}
 
-// FIXME: Convert tab to space
 pub struct Iterator<'a> {
 	bytes: &'a [Byte],
 	/// One more than the position of the last element that was output.
