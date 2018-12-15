@@ -1,4 +1,10 @@
-//! (Unpublished)
+//! Abstract description of a command
+//! as specified in some external document.
+//!
+//! The submodules (will) provide all the commands specified for GTP 2,
+//! non-standard extensions are planned for inclusion.
+//! When a command has an effect or may fail,
+//! this should be noted in the documentation.
 
 use super::gtp_type::*;
 use super::data;
@@ -16,6 +22,7 @@ pub struct Command {
 
 use data::simple_entity::Type as SE;
 use data::collection::Type as Cl;
+use data::list::Type as Lst;
 
 macro_rules! type_description {
 	( none ) => { Cl::Empty };
@@ -26,6 +33,7 @@ macro_rules! type_description {
 	( color ) => { SE::Color };
 	( move ) => { SE::Motion };
 	( boolean ) => { SE::Boolean };
+	( [ $t:tt ] ) => { <Lst as From<_>>::from(type_description!($t)) };
 }
 
 macro_rules! str_to_gtp {
@@ -38,6 +46,7 @@ macro_rules! str_to_gtp {
 	}}
 }
 
+#[macro_export]
 macro_rules! command {
 	($name:expr; $args:tt; $resp:tt) => {{
 		let name = str_to_gtp!($name);
@@ -47,6 +56,4 @@ macro_rules! command {
 	}}
 }
 
-pub fn protocol_version() -> Command {
-	command!("protocol_version"; none; int)
-}
+pub mod administrative;

@@ -32,6 +32,13 @@ pub enum Type {
 	Collection(simple_entity::Type, Box<Type>),
 }
 
+impl From<simple_entity::Type> for Type {
+	fn from(t: simple_entity::Type) -> Type {
+		let empty = Box::new(Type::Empty);
+		Type::Collection(t, empty)
+	}
+}
+
 impl Typed for Value {
 	type Type = Type;
 }

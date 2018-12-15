@@ -32,4 +32,16 @@ impl WriteGTP for Value {
 	}
 }
 
-pub type Type = collection::Type;
+pub struct Type(collection::Type);
+
+impl From<collection::Type> for Type {
+	fn from(t: collection::Type) -> Self {
+		Type(t)
+	}
+}
+
+impl From<simple_entity::Type> for Type {
+	fn from(t: simple_entity::Type) -> Self {
+		Type(From::from(t))
+	}
+}

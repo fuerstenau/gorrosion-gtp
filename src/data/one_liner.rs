@@ -19,3 +19,9 @@ impl From<simple_entity::Type> for Type {
 		Type::SimpleEntity(t)
 	}
 }
+
+impl From<list::Type> for Type {
+	fn from(t: list::Type) -> Type {
+		Type::List(t)
+	}
+}
