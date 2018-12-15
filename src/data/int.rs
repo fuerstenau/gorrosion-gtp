@@ -56,15 +56,7 @@ impl HasType for Value {
 }
 
 impl Data for Value {
-	// FIXME: Ensure data < 2^31
 	fn parse<'a, I: Input<'a>>(i: I, _t: Self::Type) -> IResult<I, Self> {
-		let digits = nom::digit(i);
-		match digits {
-			Ok((rem, str)) => {
-				let data = str.parse_to().unwrap();
-				Ok((rem, Value { data }))
-			}
-			Err(e) => Err(e),
-		}
+		flat_map!(i, nom::digit, parse_to!(Self))
 	}
 }

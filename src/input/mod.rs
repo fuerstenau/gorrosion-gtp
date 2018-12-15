@@ -70,7 +70,8 @@ mod for_t {
 		}
 	}
 
-	for_some!(nom ParseTo for f32; u32; u8);
+	use super::super::gtp_type::Int;
+	for_some!(nom ParseTo for f32; u32; u8; Int);
 
 	use std::ops::{Range, RangeFrom, RangeTo};
 	type RangeUsize = Range<usize>;
