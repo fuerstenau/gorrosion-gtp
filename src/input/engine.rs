@@ -72,15 +72,15 @@ impl<'a> iter::Iterator for Iterator<'a> {
 		macro_rules! next_byte {() => {self.bytes[self.next]}}
 		let len = self.bytes.len();
 		let res = if self.next >= len {
-			None
+			return None
 		} else if discard(&next_byte!()) {
 			self.next += 1;
-			self.next()
+			self.next()?
 		} else if starts_comment(&next_byte!()) {
-			self.skip_comment()
+			self.skip_comment()?
 		} else {
-			Some(next_byte!())
-		}?;
+			next_byte!()
+		};
 		if newline(&res) {
 			self.start_of_line = true;
 		}

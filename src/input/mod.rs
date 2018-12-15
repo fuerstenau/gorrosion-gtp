@@ -41,8 +41,7 @@ fn coerce_whitespace(b: Byte) -> Byte {
 }
 
 /// This is a simple collection trait,
-/// comprising all the traits that are currently used
-/// to parse the inputs.
+/// comprising all the traits that are currently used to parse the inputs.
 /// Only engine::Input and controller::Input should implement this trait.
 #[doc(hidden)]
 pub trait Input<'a>
