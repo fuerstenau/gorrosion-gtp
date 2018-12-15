@@ -54,7 +54,7 @@ impl<'a> Iterator<'a> {
 			self.next += 1;
 			if self.next >= len {
 				break None;
-			} else if newline(&next_byte!()) {
+			} else if newline(next_byte!()) {
 				break Some(next_byte!());
 			} else {
 				continue;
@@ -72,15 +72,15 @@ impl<'a> iter::Iterator for Iterator<'a> {
 		let len = self.bytes.len();
 		let res = if self.next >= len {
 			return None
-		} else if discard(&next_byte!()) {
+		} else if discard(next_byte!()) {
 			self.next += 1;
 			self.next()?
-		} else if starts_comment(&next_byte!()) {
+		} else if starts_comment(next_byte!()) {
 			self.skip_comment()?
 		} else {
 			next_byte!()
 		};
-		if newline(&res) {
+		if newline(res) {
 			self.start_of_line = true;
 		}
 		self.next += 1;

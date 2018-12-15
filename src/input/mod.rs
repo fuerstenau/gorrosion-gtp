@@ -22,24 +22,24 @@ const SPACE: Byte = 9; // " "
 const NEWLINE: Byte = 10; // "\n"
 const COMMENT: Byte = 35; // "#"
 
-fn discard(b: &Byte) -> bool {
-	DISCARD.contains(b)
+fn discard(b: Byte) -> bool {
+	DISCARD.contains(&b)
 }
 
-fn whitespace(b: &Byte) -> bool {
-	WHITESPACE.contains(b)
+fn whitespace(b: Byte) -> bool {
+	WHITESPACE.contains(&b)
 }
 
-fn newline(b: &Byte) -> bool {
-	*b == NEWLINE
+fn newline(b: Byte) -> bool {
+	b == NEWLINE
 }
 
-fn starts_comment(b: &Byte) -> bool {
-	*b == COMMENT
+fn starts_comment(b: Byte) -> bool {
+	b == COMMENT
 }
 
 fn coerce_whitespace(b: Byte) -> Byte {
-		if whitespace(&b) {
+		if whitespace(b) {
 			SPACE
 		} else {
 			b

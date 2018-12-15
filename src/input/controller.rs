@@ -47,13 +47,14 @@ impl<'a> iter::Iterator for Iterator<'a> {
 	type Item = Byte;
 
 	fn next(&mut self) -> Option<Self::Item> {
+		macro_rules! next_byte {() => {self.bytes[self.next]}}
 		if self.next >= self.bytes.len() {
 			None
-		} else if discard(&self.bytes[self.next]) {
+		} else if discard(next_byte!()) {
 			self.next += 1;
 			self.next()
 		} else {
-			let res = self.bytes[self.next];
+			let res = next_byte!();
 			self.next += 1;
 			Some(coerce_whitespace(res))
 		}
