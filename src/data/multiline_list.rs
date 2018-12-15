@@ -5,3 +5,7 @@ pub struct Value {
 }
 
 pub type Type = one_liner::Type;
+
+impl Typed for Value {
+	type Type = Type;
+}

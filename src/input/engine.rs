@@ -3,7 +3,7 @@ use super::{discard, coerce_whitespace, starts_comment, newline};
 use std::iter;
 
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Input<'a> {
 	bytes: &'a [Byte],
 	start_of_line: bool,

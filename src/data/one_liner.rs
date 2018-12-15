@@ -13,3 +13,9 @@ pub enum Type {
 	List(list::Type),
 	Alternatives(alternatives::Type),
 }
+
+impl From<simple_entity::Type> for Type {
+	fn from(t: simple_entity::Type) -> Type {
+		Type::SimpleEntity(t)
+	}
+}

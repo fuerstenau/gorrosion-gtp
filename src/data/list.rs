@@ -16,7 +16,7 @@ impl Value {
 
 impl WriteGTP for Value {
 	fn write_gtp(&self, f: &mut impl io::Write) -> io::Result<()> {
-		if self.data.len() == 0 {
+		if self.data.is_empty() {
 			Ok(())
 		} else {
 			let mut iter = self.data.iter();

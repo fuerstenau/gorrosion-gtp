@@ -66,5 +66,5 @@ pub mod list;
 pub mod multiline_list;
 
 // Internal helpers
-mod one_liner;
-mod simple_entity;
+pub mod one_liner;
+pub mod simple_entity;

@@ -9,8 +9,8 @@ use std::convert::From;
 use nom::*;
 
 mod nom;
-mod controller;
-mod engine;
+pub mod controller;
+pub mod engine;
 
 const DISCARD: [Byte; 31] = [
 	0, 1, 2, 3, 4, 5, 6, 7, 8, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
