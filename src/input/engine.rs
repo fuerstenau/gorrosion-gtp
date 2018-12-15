@@ -44,11 +44,6 @@ impl<'a> Iterator<'a> {
 		Iterator { bytes, next, start_of_line }
 	}
 
-	// TODO: Kill
-	pub fn last_pos(&self) -> usize {
-		self.next - 1
-	}
-
 	fn skip_comment(&mut self) -> Option<Byte> {
 		let len = self.bytes.len();
 		macro_rules! next_byte {() => {self.bytes[self.next]}}
@@ -87,5 +82,23 @@ impl<'a> iter::Iterator for Iterator<'a> {
 		}
 		self.next += 1;
 		Some(coerce_whitespace(res))
+	}
+}
+
+pub struct Enumerator<'a>(Iterator<'a>);
+
+impl<'a> Enumerator<'a> {
+	pub fn new(i: &Input<'a>) -> Self {
+		Enumerator(Iterator::new(i))
+	}
+}
+
+impl<'a> iter::Iterator for Enumerator<'a> {
+	type Item = (usize, Byte);
+
+	fn next(&mut self) -> Option<Self::Item> {
+		let Enumerator(iter) = self;
+		let byte = iter.next()?;
+		Some((iter.next - 1, byte))
 	}
 }

@@ -10,12 +10,11 @@ use super::{Byte, controller, for_t, engine};
 use data::int;
 use nom::*;
 use std::convert::TryFrom;
-use std::iter::Enumerate;
 
 /// Implement all the nom interfaces required by input::Input<'a>
 /// for a generic type name.
 macro_rules! impl_nom {
-( $T:ident, $I:ident ) => {
+( $T:ident, $I:ident, $E:ident ) => {
 	impl<'a> AtEof for $T<'a> {
 		/// While it might be possible in some settings
 		/// to determine that the connection has closed
@@ -123,12 +122,11 @@ macro_rules! impl_nom {
 	impl<'a> InputIter for $T<'a> {
 		type Item = Byte;
 		type RawItem = Byte;
-		type Iter = Enumerate<Self::IterElem>;
+		type Iter = $E<'a>;
 		type IterElem = $I<'a>;
 
-		// FIXME: This does not give the byte offsets.
 		fn iter_indices(&self) -> Self::Iter {
-			self.iter_elements().enumerate()
+			$E::new(self)
 		}
 
 		fn iter_elements(&self) -> Self::IterElem {
@@ -139,13 +137,13 @@ macro_rules! impl_nom {
 		where
 			P: Fn(Self::RawItem) -> bool,
 		{
-			let mut iter = self.iter_elements();
+			let mut iter = self.iter_indices();
 			loop {
-				if let Some(elem) = iter.next() {
+				if let Some((index, elem)) = iter.next() {
 					if predicate(elem) {
 						continue;
 					} else {
-						break Some(iter.last_pos());
+						break Some(index);
 					}
 				} else {
 					break None;
@@ -154,13 +152,9 @@ macro_rules! impl_nom {
 		}
 
 		fn slice_index(&self, count: usize) -> Option<usize> {
-			let mut iter = self.iter_elements();
-			let nth = iter.nth(count);
-			if nth.is_none() {
-				None
-			} else {
-				Some(iter.last_pos())
-			}
+			let mut iter = self.iter_indices();
+			let (res, _) = iter.nth(count)?;
+			Some(res)
 		}
 	}
 
@@ -171,7 +165,9 @@ macro_rules! impl_nom {
 
 type ControllerInput<'a> = controller::Input<'a>;
 type ControllerIterator<'a> = controller::Iterator<'a>;
+type ControllerEnumerator<'a> = controller::Enumerator<'a>;
 type EngineInput<'a> = engine::Input<'a>;
 type EngineIterator<'a> = engine::Iterator<'a>;
-impl_nom!(ControllerInput, ControllerIterator);
-impl_nom!(EngineInput, EngineIterator);
+type EngineEnumerator<'a> = engine::Enumerator<'a>;
+impl_nom!(ControllerInput, ControllerIterator, ControllerEnumerator);
+impl_nom!(EngineInput, EngineIterator, EngineEnumerator);

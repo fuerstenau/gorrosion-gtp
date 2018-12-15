@@ -10,6 +10,9 @@ pub struct Input<'a> {
 
 impl<'a> Input<'a> {
 	#[doc(hidden)]
+	// TODO: This can probably made private with little effort
+	//       since most usages of this field
+	//       need to be moved in here anyway.
 	pub fn bytes(&self) -> &'a [Byte] {
 		self.bytes
 	}
@@ -38,11 +41,6 @@ impl<'a> Iterator<'a> {
 		let next = 0;
 		Iterator { bytes, next }
 	}
-
-	// TODO: Kill
-	pub fn last_pos(&self) -> usize {
-		self.next - 1
-	}
 }
 
 impl<'a> iter::Iterator for Iterator<'a> {
@@ -59,5 +57,23 @@ impl<'a> iter::Iterator for Iterator<'a> {
 			self.next += 1;
 			Some(coerce_whitespace(res))
 		}
+	}
+}
+
+pub struct Enumerator<'a>(Iterator<'a>);
+
+impl<'a> Enumerator<'a> {
+	pub fn new(i: &Input<'a>) -> Self {
+		Enumerator(Iterator::new(i))
+	}
+}
+
+impl<'a> iter::Iterator for Enumerator<'a> {
+	type Item = (usize, Byte);
+
+	fn next(&mut self) -> Option<Self::Item> {
+		let Enumerator(iter) = self;
+		let byte = iter.next()?;
+		Some((iter.next - 1, byte))
 	}
 }
