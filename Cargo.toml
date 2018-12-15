@@ -10,6 +10,9 @@ keywords = ["Go", "baduk", "weiqi", "GTP", "protocoll"]
 categories = ["game-engines"]
 documentation = "https://docs.rs/gorrosion-gtp"
 
+[package.metadata.docs.rs]
+rustdoc-args = ["--document-private-items"]
+
 [badges]
 travis-ci = { repository = "fuerstenau/gorrosion-gtp", branch = "master" }
 coveralls = { repository = "fuerstenau/gorrosion-gtp", branch = "master", service = "github" }
