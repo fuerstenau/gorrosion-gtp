@@ -1,7 +1,7 @@
 use super::*;
 use std::convert::TryFrom;
 use std::io;
-use super::super::messages::Writable;
+use super::super::messages::WriteGTP;
 
 pub struct Value {
 	data: u32,
@@ -37,7 +37,7 @@ impl From<Value> for i32 {
 	}
 }
 
-impl Writable for Value {
+impl WriteGTP for Value {
 	fn write_gtp(&self, f: &mut impl io::Write) -> io::Result<()> {
 		write!(f, "{}", self.data)
 	}

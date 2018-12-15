@@ -1,6 +1,6 @@
 use super::*;
 use std::io;
-use super::super::messages::Writable;
+use super::super::messages::WriteGTP;
 
 pub enum Value {
 	False,
@@ -26,7 +26,7 @@ impl From<Value> for bool {
 	}
 }
 
-impl Writable for Value {
+impl WriteGTP for Value {
 	fn write_gtp(&self, f: &mut impl io::Write) -> io::Result<()> {
 		match self {
 			Value::False => write!(f, "false"),

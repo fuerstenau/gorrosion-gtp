@@ -1,6 +1,6 @@
 use super::*;
 use std::io;
-use super::super::messages::Writable;
+use super::super::messages::WriteGTP;
 
 pub struct Value {
 	color: color::Value,
@@ -17,7 +17,7 @@ impl Value {
 	}
 }
 
-impl Writable for Value {
+impl WriteGTP for Value {
 	fn write_gtp(&self, f: &mut impl io::Write) -> io::Result<()> {
 		self.color.write_gtp(f)?;
 		write!(f, " ")?;

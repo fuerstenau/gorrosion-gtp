@@ -14,7 +14,7 @@ pub trait HasType: Typed {
 	fn has_type(&self, t: &Self::Type) -> bool;
 }
 
-pub trait Data: messages::Writable + Typed + Sized {
+pub trait Data: messages::WriteGTP + Typed + Sized {
 	// TODO: Which kind of errors do we need to throw?
 	fn parse<'a, I: Input<'a>>(i: I, t: Self::Type) -> IResult<I, Self>;
 }

@@ -1,6 +1,6 @@
 use super::*;
 use std::io;
-use super::super::messages::Writable;
+use super::super::messages::WriteGTP;
 
 // TODO: Convert to and from tuples.
 pub enum Value {
@@ -12,9 +12,16 @@ impl Value {
 	fn new(head: simple_entity::Value, tail: Value) -> Value {
 		Value::Collection(head, Box::new(tail))
 	}
+
+	pub fn empty(&self) -> bool {
+		match self {
+			Value::Empty => true,
+			Value::Collection(_, _) => false,
+		}
+	}
 }
 
-impl Writable for Value {
+impl WriteGTP for Value {
 	fn write_gtp(&self, f: &mut impl io::Write) -> io::Result<()> {
 		unimplemented!()
 	}

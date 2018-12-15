@@ -1,6 +1,6 @@
 use super::*;
 use std::io;
-use super::super::messages::Writable;
+use super::super::messages::WriteGTP;
 
 // Everything but “i” and “I”
 const LEGAL_LETTERS: &str =
@@ -25,7 +25,7 @@ impl Value {
 	}
 }
 
-impl Writable for Value {
+impl WriteGTP for Value {
 	fn write_gtp(&self, f: &mut impl io::Write) -> io::Result<()> {
 		match self {
 			Value::Pass => write!(f, "pass"),

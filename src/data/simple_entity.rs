@@ -1,7 +1,7 @@
 use super::*;
 use nom::IResult;
 use std::io;
-use super::super::messages::Writable;
+use super::super::messages::WriteGTP;
 
 pub enum Value {
 	Int(int::Value),
@@ -13,7 +13,7 @@ pub enum Value {
 	Boolean(boolean::Value),
 }
 
-impl Writable for Value {
+impl WriteGTP for Value {
 	fn write_gtp(&self, f: &mut impl io::Write) -> io::Result<()> {
 		match self {
 			Value::Int(v) => v.write_gtp(f),
