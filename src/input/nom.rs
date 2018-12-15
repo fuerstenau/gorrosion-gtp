@@ -32,6 +32,13 @@ macro_rules! impl_nom {
 	}
 
 	impl<'a> InputLength for $T<'a> {
+		// TODO: Is this the correct behaviour?
+		//       The rest of the nom interface suggests
+		//       that by “length of the input“
+		//       the bytewise length is meant
+		//       instead of the number of elements
+		//       returned by the iterator
+		//       but it is not made explicit in the documentation.
 		fn input_len(&self) -> usize {
 			self.bytes().len()
 		}
@@ -43,6 +50,8 @@ macro_rules! impl_nom {
 			$T::from(bytes)
 		}
 
+		// FIXME: This behaviour is incorrect for engine::Input,
+		//        as it fails to respect comments and empty lines.
 		fn take_split(&self, count: usize) -> (Self, Self) {
 			let (prefix, suffix) = self.bytes().split_at(count);
 			let prefix = $T::from(prefix);
@@ -55,6 +64,15 @@ macro_rules! impl_nom {
 	where
 		&'a [Byte]: Slice<R>,
 	{
+		// TODO: Is this the correct behaviour?
+		//       The rest of the nom interface suggests
+		//       that by “length of the input“
+		//       the bytewise length is meant
+		//       instead of the number of elements
+		//       returned by the iterator
+		//       but it is not made explicit in the documentation.
+		// FIXME: This behaviour is incorrect for engine::Input,
+		//        as it fails to respect comments and empty lines.
 		fn slice(&self, range: R) -> Self {
 			let bytes = self.bytes().slice(range);
 			$T::from(bytes)
@@ -69,21 +87,18 @@ macro_rules! impl_nom {
 
 	impl<'a, R> ParseTo<R> for $T<'a>
 	where
-		&'a [Byte]: ParseTo<R>,
+		for<'b> &'b [Byte]: ParseTo<R>,
 	{
 		fn parse_to(&self) -> Option<R> {
-			self.bytes().parse_to()
+			let str: Vec<Byte> = self.iter_elements().collect();
+			str.as_bytes().parse_to()
 		}
 	}
 
 	impl<'a> ParseTo<int::Value> for $T<'a> {
 		fn parse_to(&self) -> Option<int::Value> {
-			let i: Option<u32> = self.parse_to();
-			if let Some(i) = i {
-				int::Value::try_from(i).ok()
-			} else {
-				None
-			}
+			let i: u32 = self.parse_to()?;
+			int::Value::try_from(i).ok()
 		}
 	}
 
@@ -94,10 +109,12 @@ macro_rules! impl_nom {
 	where
 		&'a [Byte]: Compare<S>,
 	{
+		// FIXME: Needs to iterate over iter_elements.
 		fn compare(&self, t: S) -> CompareResult {
 			self.bytes().compare(t)
 		}
 
+		// FIXME: Needs to iterate over iter_elements.
 		fn compare_no_case(&self, t: S) -> CompareResult {
 			self.bytes().compare_no_case(t)
 		}
@@ -109,6 +126,7 @@ macro_rules! impl_nom {
 		type Iter = Enumerate<Self::IterElem>;
 		type IterElem = $I<'a>;
 
+		// FIXME: This does not give the byte offsets.
 		fn iter_indices(&self) -> Self::Iter {
 			self.iter_elements().enumerate()
 		}
@@ -146,7 +164,8 @@ macro_rules! impl_nom {
 		}
 	}
 
-	/// This allows us to use a default implementation for InputTakeAtPosition.
+	/// This allows us to use a default implementation
+	/// for `InputTakeAtPosition`.
 	impl<'a> UnspecializedInput for $T<'a> {}
 }}
 

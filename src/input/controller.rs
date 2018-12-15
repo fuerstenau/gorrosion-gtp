@@ -39,6 +39,7 @@ impl<'a> Iterator<'a> {
 		Iterator { bytes, next }
 	}
 
+	// TODO: Kill
 	pub fn last_pos(&self) -> usize {
 		self.next - 1
 	}
