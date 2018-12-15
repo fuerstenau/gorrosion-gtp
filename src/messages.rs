@@ -17,7 +17,7 @@ pub trait WriteGTP {
 pub struct Command {
 	id: Option<Int>,
 	command_name: String,
-	arguments: Collection,
+	arguments: List,
 }
 
 impl WriteGTP for Command {
@@ -27,7 +27,7 @@ impl WriteGTP for Command {
 			f.write_all(b" ")?;
 		};
 		self.command_name.write_gtp(f)?;
-		if !self.arguments.empty() {
+		if !self.arguments.is_empty() {
 			f.write_all(b" ")?;
 			self.arguments.write_gtp(f)?;
 		};

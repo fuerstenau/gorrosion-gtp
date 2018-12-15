@@ -13,7 +13,7 @@ impl Value {
 		Value::Collection(head, Box::new(tail))
 	}
 
-	pub fn empty(&self) -> bool {
+	pub fn is_empty(&self) -> bool {
 		match self {
 			Value::Empty => true,
 			Value::Collection(_, _) => false,
