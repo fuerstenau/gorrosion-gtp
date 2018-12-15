@@ -1,10 +1,19 @@
+//! In GTP, commands are sent one way (Controller -> Engine)
+//! and responses another (Engine -> Controller).
+//! Representations of both of these,
+//! ready to be sent out, are provided here.
+
 use super::gtp_type::*;
 use std::io;
 
+/// One of the two most-relevant traits of all:
+/// Write your content according to the rules of to some manner of output.
 pub trait WriteGTP {
 	fn write_gtp(&self, &mut impl io::Write) -> io::Result<()>;
 }
 
+/// A command that can be sent to some engine via `write_gtp`.
+/// Bring your own engine.
 pub struct Command {
 	id: Option<Int>,
 	command_name: String,
