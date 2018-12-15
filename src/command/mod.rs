@@ -46,7 +46,27 @@ macro_rules! str_to_gtp {
 	}}
 }
 
-#[macro_export]
+// TODO: Export this macro.
+/// Specify a new command.
+///
+/// The macro takes three arguments, separated by semicola.
+/// The first is the name of the command, e.g. as string constant,
+/// the other two are the type specification
+/// of the arguments and the response, respectively.
+/// The syntax for specfication of types is not final
+/// and due to restrictions of Rusts macro system
+/// (There appears to be no way to let `*` be a part of the macros syntax
+/// since it is part of the `macro_rules!` syntax.)
+/// not exactly as in the spec.
+//
+// # Examples
+//
+// ```
+// # #[macro_use]
+// # use gorrosion_gtp::command;
+// # use gorrosion_gtp::command::Command;
+// let c: Command = command!("name"; none; [ string ]);
+// ```
 macro_rules! command {
 	($name:expr; $args:tt; $resp:tt) => {{
 		let name = str_to_gtp!($name);
