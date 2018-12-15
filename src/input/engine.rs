@@ -11,6 +11,9 @@ pub struct Input<'a> {
 
 impl<'a> Input<'a> {
 	#[doc(hidden)]
+	// TODO: This can probably made private with little effort
+	//       since most usages of this field
+	//       need to be moved in here anyway.
 	pub fn bytes(&self) -> &'a [Byte] {
 		self.bytes
 	}

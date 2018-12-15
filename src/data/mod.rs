@@ -1,3 +1,9 @@
+//! (Private)
+//!
+//! Declarations to work with the types of data defined by GTP.
+//! Most of this is publically exported via `gtp_type`,
+//! the rest ist internal plumbing.
+
 use super::messages;
 use super::input::Input;
 use nom::IResult;

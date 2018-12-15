@@ -1,3 +1,9 @@
+//! (Private)
+//!
+//! Tooling to deal with the fact that we get bytes but want data.
+//! General (pre-)processing happens here,
+//! so the stuff in `data` can focus on the interesting parts of parsing.
+
 use super::Byte;
 use std::convert::From;
 use nom::*;

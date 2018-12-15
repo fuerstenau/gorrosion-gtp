@@ -37,8 +37,17 @@ impl WriteGTP for Command {
 
 // TODO: Support for standard error messages?
 
+/// A response that can be sent to some controller via `write_gtp`,
+/// ideally matching a previously received command.
+/// Bring your own controller.
 pub struct Response {
 	id: Option<Int>,
 	success: bool,
 	content: MultilineList,
+}
+
+impl WriteGTP for Response {
+	fn write_gtp(&self, f: &mut impl io::Write) -> io::Result<()> {
+		unimplemented!()
+	}
 }

@@ -1,6 +1,6 @@
 [package]
 name = "gorrosion-gtp"
-version = "0.2.1"
+version = "0.3.0"
 authors = ["Peter Fürstenau <fuerstenau@mathematik.tu-darmstadt.de>"]
 description = "A best-effort strongly typed interface between Rust and GTP, the Go Text Protocoll"
 license = "MIT OR Apache-2.0"
