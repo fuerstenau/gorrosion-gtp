@@ -2,31 +2,17 @@ use super::super::messages::WriteGTP;
 use super::*;
 use std::io;
 
-// Everything but “i” and “I”
+// Everything but “I”
 const LEGAL_LETTERS: &str =
-	"abcdefghjklmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ";
+	"ABCDEFGHJKLMNOPQRSTUVWXYZ";
 
-#[derive(Clone, Copy, Debug)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Value {
 	Pass,
 	// TODO: Introduce types LetterCoord and NumberCoord?
+	/// The `char` is always an upper case letter except `'I'`.
+	/// (cf. `LEGAL_LETTERS`)
 	Coord(char, u8),
-}
-
-impl Eq for Value {}
-impl PartialEq for Value {
-	fn eq(&self, other: &Self) -> bool {
-		match (self, other) {
-			(Value::Pass, Value::Pass) => true,
-			(Value::Coord(l1, n1), Value::Coord(l2, n2)) => {
-				// Convert letters to lower case
-				let l1 = *l1 as u8 | 0x20;
-				let l2 = *l2 as u8 | 0x20;
-				l1 == l2 && n1 == n2
-			},
-			_ => false,
-		}
-	}
 }
 
 impl Value {
@@ -35,6 +21,8 @@ impl Value {
 	}
 
 	pub fn new(c: char, n: u8) -> Value {
+		// Convert to lower case
+		let c = (c as u8 & 0x20) as char;
 		assert!(LEGAL_LETTERS.contains(c));
 		assert!((0 < n) && (n <= 25));
 		Value::Coord(c, n)
