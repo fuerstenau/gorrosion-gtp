@@ -48,6 +48,15 @@ pub struct Response {
 
 impl WriteGTP for Response {
 	fn write_gtp(&self, f: &mut impl io::Write) -> io::Result<()> {
-		unimplemented!()
+		if self.success {
+			write!(f, "=")?;
+		} else {
+			write!(f, "?")?;
+		};
+		if let Some(int) = &self.id {
+			int.write_gtp(f)?;
+		}
+		write!(f, " ")?;
+		self.content.write_gtp(f)
 	}
 }

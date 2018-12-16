@@ -19,11 +19,28 @@ impl Value {
 			Value::Collection(_, _) => false,
 		}
 	}
+
+	fn write_space_gtp(&self, f: &mut impl io::Write) -> io::Result<()> {
+		match self {
+			Value::Empty => Ok(()),
+			Value::Collection(head, tail) => {
+				write!(f, " ")?;
+				head.write_gtp(f)?;
+				tail.write_space_gtp(f)
+			}
+		}
+	}
 }
 
 impl WriteGTP for Value {
 	fn write_gtp(&self, f: &mut impl io::Write) -> io::Result<()> {
-		unimplemented!()
+		match self {
+			Value::Empty => Ok(()),
+			Value::Collection(head, tail) => {
+				head.write_gtp(f)?;
+				tail.write_space_gtp(f)
+			}
+		}
 	}
 }
 

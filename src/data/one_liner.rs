@@ -1,10 +1,23 @@
-use super::{alternatives, collection, list, simple_entity};
+use super::super::messages::WriteGTP;
+use super::*;
+use std::io;
 
 pub enum Value {
 	SimpleEntity(simple_entity::Value),
 	Collection(collection::Value),
 	List(list::Value),
 	Alternatives(alternatives::Value),
+}
+
+impl WriteGTP for Value {
+	fn write_gtp(&self, f: &mut impl io::Write) -> io::Result<()> {
+		match self {
+			Value::SimpleEntity(v) => v.write_gtp(f),
+			Value::Collection(v) => v.write_gtp(f),
+			Value::List(v) => v.write_gtp(f),
+			Value::Alternatives(v) => v.write_gtp(f),
+		}
+	}
 }
 
 pub enum Type {
