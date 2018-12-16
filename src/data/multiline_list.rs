@@ -7,6 +7,14 @@ pub struct Value {
 	data: Vec<one_liner::Value>,
 }
 
+impl Value {
+	pub fn push(&mut self, v: one_liner::Value) {
+		if v.has_type(&self.t) {
+			self.data.push(v)
+		}
+	}
+}
+
 impl WriteGTP for Value {
 	fn write_gtp(&self, f: &mut impl io::Write) -> io::Result<()> {
 		if self.data.is_empty() {

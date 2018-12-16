@@ -76,6 +76,26 @@ impl From<alternatives::Type> for Type {
 	}
 }
 
+impl HasType<Type> for Value {
+	fn has_type(&self, t: &Type) -> bool {
+		match (self, t) {
+			(Value::SimpleEntity(v), Type::SimpleEntity(t)) => {
+				v.has_type(t)
+			},
+			(Value::List(v), Type::List(t)) => {
+				v.has_type(t)
+			},
+			(Value::Collection(v), Type::Collection(t)) => {
+				v.has_type(t)
+			},
+			(Value::Alternatives(v), Type::Alternatives(t)) => {
+				v.has_type(t)
+			},
+			(_, _) => false,
+		}
+	}
+}
+
 impl Data for Value {
 	type Type = Type;
 

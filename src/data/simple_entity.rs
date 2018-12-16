@@ -47,7 +47,7 @@ impl WriteGTP for Value {
 	}
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub enum Type {
 	Int,
 	Float,

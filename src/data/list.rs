@@ -12,6 +12,12 @@ impl Value {
 		let data = &self.data;
 		data.is_empty() || (data.len() == 1 && data[0].is_empty())
 	}
+
+	pub fn push(&mut self, v: collection::Value) {
+		if v.has_type(&self.t) {
+			self.data.push(v)
+		}
+	}
 }
 
 impl WriteGTP for Value {
@@ -32,7 +38,7 @@ impl WriteGTP for Value {
 	}
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Type(collection::Type);
 
 impl From<collection::Type> for Type {
@@ -44,6 +50,13 @@ impl From<collection::Type> for Type {
 impl From<simple_entity::Type> for Type {
 	fn from(t: simple_entity::Type) -> Self {
 		Type(From::from(t))
+	}
+}
+
+impl HasType<Type> for Value {
+	fn has_type(&self, t: &Type) -> bool {
+		let Type(t) = t;
+		&self.t == t
 	}
 }
 

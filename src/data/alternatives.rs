@@ -33,6 +33,13 @@ impl From<(simple_entity::Type, simple_entity::Type)> for Type {
 	}
 }
 
+impl HasType<Type> for Value {
+	fn has_type(&self, t: &Type) -> bool {
+		let Value(v) = self;
+		v.has_type(&t.first) | v.has_type(&t.second)
+	}
+}
+
 impl Data for Value {
 	type Type = Type;
 

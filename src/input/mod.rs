@@ -81,6 +81,7 @@ mod for_t {
 	for_some!(nom ParseTo for f32; u32; u8; Int);
 
 	use std::ops::{Range, RangeFrom, RangeTo};
+	// TODO: Why are these aliases recognized as unused?
 	type RangeUsize = Range<usize>;
 	type RangeToUsize = RangeTo<usize>;
 	type RangeFromUsize = RangeFrom<usize>;
