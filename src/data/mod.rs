@@ -18,7 +18,7 @@ pub trait Data: messages::WriteGTP + Sized {
 	type Type;
 
 	// TODO: Which kind of errors do we need to throw?
-	fn parse<'a, I: Input<'a>>(i: I, t: Self::Type) -> IResult<I, Self>;
+	fn parse<'a, I: Input<'a>>(i: I, t: &Self::Type) -> IResult<I, Self>;
 }
 
 macro_rules! parse_gtp {
@@ -29,7 +29,7 @@ macro_rules! parse_gtp {
 
 macro_rules! singleton_type {
 	( $i:ident ) => {
-		#[derive(PartialEq, Eq)]
+		#[derive(PartialEq, Eq, Clone, Copy)]
 		pub enum Type {
 			$i,
 		}

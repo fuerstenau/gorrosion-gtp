@@ -35,10 +35,10 @@ impl From<(simple_entity::Type, simple_entity::Type)> for Type {
 impl Data for Value {
 	type Type = Type;
 
-	fn parse<'a, I: Input<'a>>(i: I, t: Self::Type) -> IResult<I, Self> {
+	fn parse<'a, I: Input<'a>>(i: I, t: &Self::Type) -> IResult<I, Self> {
 		map!(
 			i,
-			alt!(parse_gtp!(t.first) | parse_gtp!(t.second)),
+			alt!(parse_gtp!(&t.first) | parse_gtp!(&t.second)),
 			From::<simple_entity::Value>::from
 		)
 	}

@@ -32,6 +32,7 @@ impl WriteGTP for Value {
 	}
 }
 
+#[derive(Clone)]
 pub struct Type(collection::Type);
 
 impl From<collection::Type> for Type {
@@ -49,7 +50,12 @@ impl From<simple_entity::Type> for Type {
 impl Data for Value {
 	type Type = Type;
 
-	fn parse<'a, I: Input<'a>>(i: I, t: Self::Type) -> IResult<I, Self> {
-		unimplemented!()
+	fn parse<'a, I: Input<'a>>(i: I, t: &Self::Type) -> IResult<I, Self> {
+		let Type(t) = t.clone();
+		#[rustfmt::skip]
+		do_parse!(i,
+			data: separated_list!(tag!(" "), parse_gtp!(&t)) >>
+			(Value { t, data })
+		)
 	}
 }

@@ -44,6 +44,7 @@ impl WriteGTP for Value {
 	}
 }
 
+#[derive(Clone)]
 pub enum Type {
 	Empty,
 	Collection(simple_entity::Type, Box<Type>),
@@ -72,22 +73,15 @@ impl HasType<Type> for Value {
 impl Data for Value {
 	type Type = Type;
 
-	fn parse<'a, I: Input<'a>>(i: I, t: Self::Type) -> IResult<I, Self> {
+	fn parse<'a, I: Input<'a>>(i: I, t: &Self::Type) -> IResult<I, Self> {
+		#[rustfmt::skip]
 		match t {
 			Type::Empty => Ok((i, Value::Empty)),
-			Type::Collection(head, tail) => {
-				let parse_head = |i| {
-					simple_entity::Value::parse(i, head)
-				};
-				#[rustfmt::skip]
-				let parse_tail = |i| {
-					collection::Value::parse(i, *tail)
-				};
-				#[rustfmt::skip]
+			Type::Collection(head_t, tail_t) => {
 				do_parse!(i,
 					tag!(" ") >>
-					head: call!(parse_head) >>
-					tail: call!(parse_tail) >>
+					head: parse_gtp!(head_t) >>
+					tail: parse_gtp!(&**tail_t) >>
 					(Value::new(head, tail))
 				)
 			}

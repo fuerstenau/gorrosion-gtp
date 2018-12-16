@@ -36,16 +36,14 @@ impl HasType<Type> for Value {
 impl Data for Value {
 	type Type = Type;
 
-	fn parse<'a, I: Input<'a>>(i: I, _t: Self::Type) -> IResult<I, Self> {
-		let parse_color =
-			|i| color::Value::parse(i, color::Type::default());
-		let parse_vertex =
-			|i| vertex::Value::parse(i, vertex::Type::default());
+	fn parse<'a, I: Input<'a>>(i: I, _t: &Self::Type) -> IResult<I, Self> {
+		let color_t = &color::Type::default();
+		let vertex_t = &vertex::Type::default();
 		#[rustfmt::skip]
 		do_parse!(i,
-			color: call!(parse_color) >>
+			color: parse_gtp!(color_t) >>
 			tag!(" ") >>
-			vertex: call!(parse_vertex) >>
+			vertex: parse_gtp!(vertex_t) >>
 			(Value { color, vertex })
 		)
 	}

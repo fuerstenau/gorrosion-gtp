@@ -78,7 +78,7 @@ macro_rules! str_to_gtp {
 		let s = $e;
 		let i = input::engine::Input::from(s.as_bytes());
 		let t = data::string::Type::default();
-		let (_, r) = <String as data::Data>::parse(i, t).unwrap();
+		let (_, r) = <String as data::Data>::parse(i, &t).unwrap();
 		r
 	}};
 }

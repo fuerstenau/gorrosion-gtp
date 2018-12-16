@@ -39,7 +39,7 @@ impl Data for Value {
 	/// in which ways a float may be represented.
 	/// We therefore simply accept as a float
 	/// whatever nom accepts as a float.
-	fn parse<'a, I: Input<'a>>(i: I, _t: Self::Type) -> IResult<I, Self> {
+	fn parse<'a, I: Input<'a>>(i: I, _t: &Self::Type) -> IResult<I, Self> {
 		let result = nom::float(i);
 		result.map(|(rem, data)| (rem, Value { data }))
 	}

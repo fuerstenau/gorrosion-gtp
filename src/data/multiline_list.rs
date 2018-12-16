@@ -29,7 +29,7 @@ pub type Type = one_liner::Type;
 impl Data for Value {
 	type Type = Type;
 
-	fn parse<'a, I: Input<'a>>(i: I, t: Self::Type) -> IResult<I, Self> {
+	fn parse<'a, I: Input<'a>>(i: I, t: &Self::Type) -> IResult<I, Self> {
 		unimplemented!()
 	}
 }

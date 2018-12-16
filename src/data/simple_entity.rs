@@ -13,6 +13,26 @@ pub enum Value {
 	Boolean(boolean::Value),
 }
 
+macro_rules! impl_froms {
+	( $(($t:ident, $m:ident)), * ) => {
+		$(impl From<$m::Value> for Value {
+			fn from(v: $m::Value) -> Self {
+				Value::$t(v)
+			}
+		})*
+	}
+}
+
+impl_froms!(
+	(Int, int),
+	(Float, float),
+	(String, string),
+	(Vertex, vertex),
+	(Color, color),
+	(Motion, motion),
+	(Boolean, boolean)
+);
+
 impl WriteGTP for Value {
 	fn write_gtp(&self, f: &mut impl io::Write) -> io::Result<()> {
 		match self {
@@ -27,7 +47,7 @@ impl WriteGTP for Value {
 	}
 }
 
-#[derive(PartialEq, Eq)]
+#[derive(PartialEq, Eq, Clone)]
 pub enum Type {
 	Int,
 	Float,
@@ -54,12 +74,14 @@ impl HasType<Type> for Value {
 }
 
 macro_rules! parse {
-	( $i:expr, $e:expr; $( ($t:ident, $m:ident) ), * ) => {
+	( $in:expr, $e:expr; $( ($t:ident, $m:ident) ), * ) => {
 		match $e {
-			$( Type::$t =>
-				$m::Value::parse($i, $m::Type::default())
-					.map(|(rm, rs)| (rm, Value::$t(rs))),
-			)*
+			$( Type::$t => {
+				let t = &$m::Type::default();
+				// TODO: map!($in, parse_gtp!(t), From::from)
+				let result = $m::Value::parse($in, t);
+				result.map(|(i, v)| (i, From::from(v)))
+			} )*
 		}
 	}
 }
@@ -67,7 +89,7 @@ macro_rules! parse {
 impl Data for Value {
 	type Type = Type;
 
-	fn parse<'a, I: Input<'a>>(i: I, t: Self::Type) -> IResult<I, Self> {
+	fn parse<'a, I: Input<'a>>(i: I, t: &Self::Type) -> IResult<I, Self> {
 		#[rustfmt::skip]
 		parse!(i, t;
 			(Int, int),

@@ -54,7 +54,7 @@ impl HasType<Type> for Value {
 impl Data for Value {
 	type Type = Type;
 
-	fn parse<'a, I: Input<'a>>(i: I, _t: Self::Type) -> IResult<I, Self> {
+	fn parse<'a, I: Input<'a>>(i: I, _t: &Self::Type) -> IResult<I, Self> {
 		flat_map!(i, nom::digit, parse_to!(Self))
 	}
 }

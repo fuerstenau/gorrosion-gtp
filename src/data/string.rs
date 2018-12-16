@@ -31,7 +31,7 @@ impl HasType<Type> for Value {
 impl Data for Value {
 	type Type = Type;
 
-	fn parse<'a, I: Input<'a>>(i: I, _t: Self::Type) -> IResult<I, Self> {
+	fn parse<'a, I: Input<'a>>(i: I, _t: &Self::Type) -> IResult<I, Self> {
 		let result = take_until_either!(i, b" \n");
 		match result {
 			Ok((rem, data)) => {
