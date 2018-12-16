@@ -25,3 +25,15 @@ impl From<list::Type> for Type {
 		Type::List(t)
 	}
 }
+
+impl From<collection::Type> for Type {
+	fn from(t: collection::Type) -> Type {
+		Type::Collection(t)
+	}
+}
+
+impl From<alternatives::Type> for Type {
+	fn from(t: alternatives::Type) -> Type {
+		Type::Alternatives(t)
+	}
+}

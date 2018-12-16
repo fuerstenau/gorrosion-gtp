@@ -45,3 +45,7 @@ impl From<simple_entity::Type> for Type {
 		Type(From::from(t))
 	}
 }
+
+impl Typed for Value {
+	type Type = Type;
+}

@@ -12,17 +12,22 @@ use super::input;
 
 /* Standard Errors
 unknown command
+unacceptable size
+illegal move
+cannot undo
 */
 
 pub struct Command {
 	name: String,
-	arguments: <Collection as data::Typed>::Type,
+	arguments: <List as data::Typed>::Type,
 	response: <MultilineList as data::Typed>::Type,
 }
 
 use data::simple_entity::Type as SE;
 use data::collection::Type as Cl;
 use data::list::Type as Lst;
+use data::multiline_list::Type as ML;
+use data::alternatives::Type as Alt;
 
 macro_rules! type_description {
 	( none ) => { Cl::Empty };
@@ -33,7 +38,18 @@ macro_rules! type_description {
 	( color ) => { SE::Color };
 	( move ) => { SE::Motion };
 	( boolean ) => { SE::Boolean };
-	( [ $t:tt ] ) => { <Lst as From<_>>::from(type_description!($t)) };
+	( $f:tt | $s:tt ) => { <Alt as From<_>>::from(
+		(type_description!($f), type_description!($s))
+	)};
+	( $t:tt * ) => {
+		<Lst as From<_>>::from(type_description!($t))
+	};
+	( $t:tt & ) => {
+		<ML as From<_>>::from(type_description!($t))
+	};
+	( $t:tt * & ) => {
+		<ML as From<_>>::from(type_description!($t *))
+	};
 }
 
 macro_rules! str_to_gtp {
@@ -68,12 +84,15 @@ macro_rules! str_to_gtp {
 // let c: Command = command!("name"; none; [ string ]);
 // ```
 macro_rules! command {
-	($name:expr; $args:tt; $resp:tt) => {{
+	($name:expr => ($($args:tt)*) -> ($($resp:tt)*)) => {{
 		let name = str_to_gtp!($name);
-		let arguments = From::from(type_description!($args));
-		let response = From::from(type_description!($resp));
+		let arguments = From::from(type_description!($($args)*));
+		let response = From::from(type_description!($($resp)*));
 		Command { name, arguments, response }
-	}}
+	}};
 }
 
 pub mod administrative;
+pub mod setup;
+pub mod core_play;
+pub mod tournament;
