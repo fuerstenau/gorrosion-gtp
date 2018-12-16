@@ -2,6 +2,7 @@ use super::super::messages::WriteGTP;
 use super::*;
 use std::io;
 
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Value {
 	color: color::Value,
 	vertex: vertex::Value,

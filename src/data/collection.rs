@@ -3,6 +3,7 @@ use super::*;
 use std::io;
 
 // TODO: Convert to and from tuples.
+#[derive(Clone, Debug, PartialEq)]
 pub enum Value {
 	Empty,
 	Collection(simple_entity::Value, Box<Value>),

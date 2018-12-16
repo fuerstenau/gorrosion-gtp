@@ -6,11 +6,27 @@ use std::io;
 const LEGAL_LETTERS: &str =
 	"abcdefghjklmnopqrstuvwxyzABCDEFGHJKLMNOPQRSTUVWXYZ";
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug)]
 pub enum Value {
 	Pass,
 	// TODO: Introduce types LetterCoord and NumberCoord?
 	Coord(char, u8),
+}
+
+impl Eq for Value {}
+impl PartialEq for Value {
+	fn eq(&self, other: &Self) -> bool {
+		match (self, other) {
+			(Value::Pass, Value::Pass) => true,
+			(Value::Coord(l1, n1), Value::Coord(l2, n2)) => {
+				// Convert letters to lower case
+				let l1 = *l1 as u8 | 0x20;
+				let l2 = *l2 as u8 | 0x20;
+				l1 == l2 && n1 == n2
+			},
+			_ => false,
+		}
+	}
 }
 
 impl Value {

@@ -2,7 +2,7 @@ use super::super::messages::WriteGTP;
 use super::*;
 use std::io;
 
-#[derive(Clone, Copy)]
+#[derive(Clone, Copy, Debug, PartialEq, Eq)]
 pub enum Value {
 	Black,
 	White,

@@ -3,6 +3,7 @@ use super::*;
 use nom::IResult;
 use std::io;
 
+#[derive(Clone, Debug, PartialEq)]
 pub enum Value {
 	Int(int::Value),
 	Float(float::Value),

@@ -2,6 +2,7 @@ use super::super::messages::WriteGTP;
 use super::*;
 use std::io;
 
+#[derive(Clone, Debug, PartialEq, Eq, Copy)]
 pub enum Value {
 	False,
 	True,

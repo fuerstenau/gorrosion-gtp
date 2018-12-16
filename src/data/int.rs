@@ -3,6 +3,7 @@ use super::*;
 use std::convert::TryFrom;
 use std::io;
 
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Value {
 	data: u32,
 }

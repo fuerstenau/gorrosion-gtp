@@ -11,6 +11,9 @@
 #![feature(stmt_expr_attributes)]
 #![feature(try_from)]
 
+#![warn(missing_debug_implementations)]
+#![warn(missing_docs)]
+
 #[macro_use]
 extern crate nom;
 

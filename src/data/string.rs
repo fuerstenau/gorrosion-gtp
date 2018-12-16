@@ -4,6 +4,7 @@ use std::io;
 
 type Byte = u8;
 
+#[derive(Clone, Debug, PartialEq, Eq)]
 pub struct Value {
 	data: Vec<Byte>,
 }
