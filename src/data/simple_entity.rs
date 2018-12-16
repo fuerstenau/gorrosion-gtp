@@ -38,22 +38,18 @@ pub enum Type {
 	Boolean,
 }
 
-impl Typed for Value {
-	type Type = Type;
-}
-
-impl HasType for Value {
-	fn has_type(&self, t: &Self::Type) -> bool {
-		#[rustfmt::skip]
-		t == &type_of!(self;
-			Int,
-			Float,
-			String,
-			Vertex,
-			Color,
-			Motion,
-			Boolean
-		)
+impl HasType<Type> for Value {
+	fn has_type(&self, t: &Type) -> bool {
+		match (self, t) {
+			(Value::Int(_), Type::Int) => true,
+			(Value::Float(_), Type::Float) => true,
+			(Value::String(_), Type::String) => true,
+			(Value::Vertex(_), Type::Vertex) => true,
+			(Value::Color(_), Type::Color) => true,
+			(Value::Motion(_), Type::Motion) => true,
+			(Value::Boolean(_), Type::Boolean) => true,
+			_ => false,
+		}
 	}
 }
 
@@ -69,6 +65,8 @@ macro_rules! parse {
 }
 
 impl Data for Value {
+	type Type = Type;
+
 	fn parse<'a, I: Input<'a>>(i: I, t: Self::Type) -> IResult<I, Self> {
 		#[rustfmt::skip]
 		parse!(i, t;

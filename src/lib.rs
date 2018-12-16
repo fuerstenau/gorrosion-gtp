@@ -10,8 +10,6 @@
 
 #![feature(stmt_expr_attributes)]
 #![feature(try_from)]
-// TODO: Disable once all the code lives
-#![allow(dead_code)]
 
 #[macro_use]
 extern crate nom;

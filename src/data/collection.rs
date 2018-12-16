@@ -56,12 +56,8 @@ impl From<simple_entity::Type> for Type {
 	}
 }
 
-impl Typed for Value {
-	type Type = Type;
-}
-
-impl HasType for Value {
-	fn has_type(&self, t: &Self::Type) -> bool {
+impl HasType<Type> for Value {
+	fn has_type(&self, t: &Type) -> bool {
 		match (self, t) {
 			(Value::Empty, Type::Empty) => true,
 			(
@@ -74,6 +70,8 @@ impl HasType for Value {
 }
 
 impl Data for Value {
+	type Type = Type;
+
 	fn parse<'a, I: Input<'a>>(i: I, t: Self::Type) -> IResult<I, Self> {
 		match t {
 			Type::Empty => Ok((i, Value::Empty)),

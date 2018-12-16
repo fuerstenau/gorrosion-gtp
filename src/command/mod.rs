@@ -19,8 +19,8 @@ cannot undo
 
 pub struct Command {
 	name: String,
-	arguments: <List as data::Typed>::Type,
-	response: <MultilineList as data::Typed>::Type,
+	arguments: <List as data::Data>::Type,
+	response: <MultilineList as data::Data>::Type,
 }
 
 use data::alternatives::Type as Alt;

@@ -22,17 +22,15 @@ impl WriteGTP for Value {
 
 singleton_type!(String);
 
-impl Typed for Value {
-	type Type = Type;
-}
-
-impl HasType for Value {
-	fn has_type(&self, _t: &Self::Type) -> bool {
+impl HasType<Type> for Value {
+	fn has_type(&self, _t: &Type) -> bool {
 		true
 	}
 }
 
 impl Data for Value {
+	type Type = Type;
+
 	fn parse<'a, I: Input<'a>>(i: I, _t: Self::Type) -> IResult<I, Self> {
 		let result = take_until_either!(i, b" \n");
 		match result {

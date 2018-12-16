@@ -10,19 +10,21 @@ use nom::IResult;
 
 // TODO: I'm unhappy with quite a few of the names.
 
-pub trait Typed {
+pub trait HasType<T> {
+	fn has_type(&self, t: &T) -> bool;
+}
+
+pub trait Data: messages::WriteGTP + Sized {
 	type Type;
-}
 
-// TODO: Add default impl<T> where T::Type: Default
-//       when Rust supports this.
-pub trait HasType: Typed {
-	fn has_type(&self, t: &Self::Type) -> bool;
-}
-
-pub trait Data: messages::WriteGTP + Typed + Sized {
 	// TODO: Which kind of errors do we need to throw?
 	fn parse<'a, I: Input<'a>>(i: I, t: Self::Type) -> IResult<I, Self>;
+}
+
+macro_rules! parse_gtp {
+	($i:ident, $t:expr) => {
+		Data::parse($i, $t)
+	};
 }
 
 macro_rules! singleton_type {
@@ -38,16 +40,6 @@ macro_rules! singleton_type {
 			}
 		}
 	};
-}
-
-/// Determine the type of an expression
-/// in cases where the value and type enums are named in perfect sync.
-macro_rules! type_of {
-	( $s:expr; $( $t:ident ), * ) => {
-		match $s {
-			$( Value::$t(_) =>  Type::$t, )*
-		}
-	}
 }
 
 // Simple Entities

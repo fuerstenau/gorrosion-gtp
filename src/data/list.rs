@@ -46,6 +46,10 @@ impl From<simple_entity::Type> for Type {
 	}
 }
 
-impl Typed for Value {
+impl Data for Value {
 	type Type = Type;
+
+	fn parse<'a, I: Input<'a>>(i: I, t: Self::Type) -> IResult<I, Self> {
+		unimplemented!()
+	}
 }

@@ -26,6 +26,10 @@ impl WriteGTP for Value {
 
 pub type Type = one_liner::Type;
 
-impl Typed for Value {
+impl Data for Value {
 	type Type = Type;
+
+	fn parse<'a, I: Input<'a>>(i: I, t: Self::Type) -> IResult<I, Self> {
+		unimplemented!()
+	}
 }

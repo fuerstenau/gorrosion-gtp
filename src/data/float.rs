@@ -26,17 +26,15 @@ impl WriteGTP for Value {
 
 singleton_type!(Float);
 
-impl Typed for Value {
-	type Type = Type;
-}
-
-impl HasType for Value {
-	fn has_type(&self, _t: &Self::Type) -> bool {
+impl HasType<Type> for Value {
+	fn has_type(&self, _t: &Type) -> bool {
 		true
 	}
 }
 
 impl Data for Value {
+	type Type = Type;
+
 	/// The GTP “specification” does not specify
 	/// in which ways a float may be represented.
 	/// We therefore simply accept as a float
