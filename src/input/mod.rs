@@ -5,12 +5,12 @@
 //! so the stuff in `data` can focus on the interesting parts of parsing.
 
 use super::Byte;
-use std::convert::From;
 use nom::*;
+use std::convert::From;
 
-mod nom;
 pub mod controller;
 pub mod engine;
+mod nom;
 
 const DISCARD: [Byte; 31] = [
 	0, 1, 2, 3, 4, 5, 6, 7, 8, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21,
@@ -39,11 +39,11 @@ fn starts_comment(b: Byte) -> bool {
 }
 
 fn coerce_whitespace(b: Byte) -> Byte {
-		if whitespace(b) {
-			SPACE
-		} else {
-			b
-		}
+	if whitespace(b) {
+		SPACE
+	} else {
+		b
+	}
 }
 
 /// This is a simple collection trait,
@@ -64,7 +64,8 @@ where
 	Self: UnspecializedInput,
 	Self: for_t::ParseTo,
 	Self: for_t::Slice,
-{}
+{
+}
 
 mod for_t {
 	macro_rules! for_some {

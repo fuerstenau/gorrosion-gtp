@@ -4,8 +4,8 @@
 //! Most of this is publically exported via `gtp_type`,
 //! the rest ist internal plumbing.
 
-use super::messages;
 use super::input::Input;
+use super::messages;
 use nom::IResult;
 
 // TODO: I'm unhappy with quite a few of the names.

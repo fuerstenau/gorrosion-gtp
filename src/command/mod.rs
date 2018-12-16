@@ -6,8 +6,8 @@
 //! When a command has an effect or may fail,
 //! this should be noted in the documentation.
 
-use super::gtp_type::*;
 use super::data;
+use super::gtp_type::*;
 use super::input;
 
 /* Standard Errors
@@ -23,24 +23,43 @@ pub struct Command {
 	response: <MultilineList as data::Typed>::Type,
 }
 
-use data::simple_entity::Type as SE;
+use data::alternatives::Type as Alt;
 use data::collection::Type as Cl;
 use data::list::Type as Lst;
 use data::multiline_list::Type as ML;
-use data::alternatives::Type as Alt;
+use data::simple_entity::Type as SE;
 
 macro_rules! type_description {
-	( none ) => { Cl::Empty };
-	( int ) => { SE::Int };
-	( float ) => { SE::Float };
-	( string ) => { SE::String };
-	( vertex ) => { SE::Vertex };
-	( color ) => { SE::Color };
-	( move ) => { SE::Motion };
-	( boolean ) => { SE::Boolean };
-	( $f:tt | $s:tt ) => { <Alt as From<_>>::from(
-		(type_description!($f), type_description!($s))
-	)};
+	( none ) => {
+		Cl::Empty
+	};
+	( int ) => {
+			SE::Int
+	};
+	( float ) => {
+		SE::Float
+	};
+	( string ) => {
+		SE::String
+	};
+	( vertex ) => {
+		SE::Vertex
+	};
+	( color ) => {
+		SE::Color
+	};
+	( move ) => {
+		SE::Motion
+	};
+	( boolean ) => {
+		SE::Boolean
+	};
+	( $f:tt | $s:tt ) => {
+		<Alt as From<_>>::from((
+			type_description!($f),
+			type_description!($s),
+			))
+	};
 	( $t:tt * ) => {
 		<Lst as From<_>>::from(type_description!($t))
 	};
@@ -52,6 +71,8 @@ macro_rules! type_description {
 	};
 }
 
+// Rustfmt has a weird bug regarding the last lines of this macro.
+#[rustfmt::skip]
 macro_rules! str_to_gtp {
 	( $e:expr ) => {{
 		let s = $e;
@@ -59,7 +80,7 @@ macro_rules! str_to_gtp {
 		let t = data::string::Type::default();
 		let (_, r) = <String as data::Data>::parse(i, t).unwrap();
 		r
-	}}
+	}};
 }
 
 // TODO: Export this macro.
@@ -93,6 +114,6 @@ macro_rules! command {
 }
 
 pub mod administrative;
-pub mod setup;
 pub mod core_play;
+pub mod setup;
 pub mod tournament;

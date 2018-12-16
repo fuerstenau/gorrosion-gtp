@@ -22,7 +22,7 @@ use super::*;
 /// > This command gives no provision for negotiation of the time settings.
 pub fn time_settings() -> Command {
 	unimplemented!()
-//	command!("time_settings" => ({int int int}) ->
+	//	command!("time_settings" => ({int int int}) ->
 }
 
 /// Give information about the current time status.
@@ -40,5 +40,5 @@ pub fn time_settings() -> Command {
 /// > the number of remaining stones is given as 0.
 pub fn time_left() -> Command {
 	unimplemented!()
-//	command!("time_left" => ({color int int}) -> (none))
+	//	command!("time_left" => ({color int int}) -> (none))
 }

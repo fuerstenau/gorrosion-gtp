@@ -1,6 +1,6 @@
+use super::super::messages::WriteGTP;
 use super::*;
 use std::io;
-use super::super::messages::WriteGTP;
 
 #[derive(Clone, Copy)]
 pub enum Value {
@@ -9,7 +9,7 @@ pub enum Value {
 }
 
 impl WriteGTP for Value {
-	fn write_gtp(&self, f: &mut impl io:: Write) -> io::Result<()> {
+	fn write_gtp(&self, f: &mut impl io::Write) -> io::Result<()> {
 		match self {
 			Value::Black => write!(f, "Black"),
 			Value::White => write!(f, "White"),

@@ -28,6 +28,6 @@ type Byte = u8;
 mod data;
 mod input;
 
+pub mod command;
 pub mod gtp_type;
 pub mod messages;
-pub mod command;

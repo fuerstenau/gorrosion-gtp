@@ -1,7 +1,6 @@
 use super::Byte;
-use super::{discard, coerce_whitespace};
+use super::{coerce_whitespace, discard};
 use std::iter;
-
 
 #[derive(Clone)]
 pub struct Input<'a> {
@@ -47,7 +46,11 @@ impl<'a> iter::Iterator for Iterator<'a> {
 	type Item = Byte;
 
 	fn next(&mut self) -> Option<Self::Item> {
-		macro_rules! next_byte {() => {self.bytes[self.next]}}
+		macro_rules! next_byte {
+			() => {
+				self.bytes[self.next]
+			};
+		}
 		if self.next >= self.bytes.len() {
 			None
 		} else if discard(next_byte!()) {

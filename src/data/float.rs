@@ -1,5 +1,5 @@
-use super::*;
 use super::super::messages::WriteGTP;
+use super::*;
 use std::io;
 
 pub struct Value {

@@ -1,7 +1,7 @@
+use super::super::messages::WriteGTP;
 use super::*;
 use nom::IResult;
 use std::io;
-use super::super::messages::WriteGTP;
 
 pub enum Value {
 	Int(int::Value),

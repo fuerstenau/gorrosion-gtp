@@ -1,7 +1,6 @@
 use super::Byte;
-use super::{discard, coerce_whitespace, starts_comment, newline};
+use super::{coerce_whitespace, discard, newline, starts_comment};
 use std::iter;
-
 
 #[derive(Clone, Debug)]
 pub struct Input<'a> {
@@ -23,7 +22,10 @@ impl<'a> From<&'a [Byte]> for Input<'a> {
 	fn from(bytes: &'a [Byte]) -> Self {
 		// TODO: Is this the correct behaviour?
 		let start_of_line = true;
-		Input { bytes, start_of_line }
+		Input {
+			bytes,
+			start_of_line,
+		}
 	}
 }
 
@@ -44,12 +46,20 @@ impl<'a> Iterator<'a> {
 		let bytes = i.bytes;
 		let next = 0;
 		let start_of_line = i.start_of_line;
-		Iterator { bytes, next, start_of_line }
+		Iterator {
+			bytes,
+			next,
+			start_of_line,
+		}
 	}
 
 	fn skip_comment(&mut self) -> Option<Byte> {
 		let len = self.bytes.len();
-		macro_rules! next_byte {() => {self.bytes[self.next]}}
+		macro_rules! next_byte {
+			() => {
+				self.bytes[self.next]
+			};
+		}
 		loop {
 			self.next += 1;
 			if self.next >= len {
@@ -68,10 +78,14 @@ impl<'a> iter::Iterator for Iterator<'a> {
 
 	// TODO: Skip empty lines
 	fn next(&mut self) -> Option<Self::Item> {
-		macro_rules! next_byte {() => {self.bytes[self.next]}}
+		macro_rules! next_byte {
+			() => {
+				self.bytes[self.next]
+			};
+		}
 		let len = self.bytes.len();
 		let res = if self.next >= len {
-			return None
+			return None;
 		} else if discard(next_byte!()) {
 			self.next += 1;
 			self.next()?

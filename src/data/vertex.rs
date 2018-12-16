@@ -1,6 +1,6 @@
+use super::super::messages::WriteGTP;
 use super::*;
 use std::io;
-use super::super::messages::WriteGTP;
 
 // Everything but “i” and “I”
 const LEGAL_LETTERS: &str =
@@ -32,7 +32,7 @@ impl WriteGTP for Value {
 			Value::Coord(l, n) => {
 				write!(f, "{}", l)?;
 				write!(f, "{}", n)
-			},
+			}
 		}
 	}
 }

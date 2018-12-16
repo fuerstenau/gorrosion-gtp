@@ -56,7 +56,7 @@ pub type Move = motion::Value;
 /// A boolean value, either `True` or `False`.
 ///
 /// Most easily used, resp. provided, by casting to, resp. from, `bool`.
-pub type Boolean =  self::boolean::Value;
+pub type Boolean = self::boolean::Value;
 
 /// A heterogenous tuple.
 ///

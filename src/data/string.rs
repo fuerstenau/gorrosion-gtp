@@ -1,6 +1,6 @@
+use super::super::messages::WriteGTP;
 use super::*;
 use std::io;
-use super::super::messages::WriteGTP;
 
 type Byte = u8;
 
