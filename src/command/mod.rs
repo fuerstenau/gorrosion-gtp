@@ -17,6 +17,10 @@ illegal move
 cannot undo
 */
 
+/// Abstract representation of a command that may be supported by an engine.
+/// Contains the name of the command
+/// as well as the argument and result type specifications.
+#[derive(Debug)]
 pub struct Command {
 	name: String,
 	arguments: <List as data::Data>::Type,

@@ -6,6 +6,7 @@ use super::super::messages::WriteGTP;
 use super::*;
 use std::io;
 
+#[derive(Debug)]
 pub struct Value(simple_entity::Value);
 
 impl From<simple_entity::Value> for Value {

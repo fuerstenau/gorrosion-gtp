@@ -7,13 +7,28 @@ use super::gtp_type::*;
 use std::io;
 
 /// One of the two most-relevant traits of all:
-/// Write your content according to the rules of to some manner of output.
+/// Write a Rust object as GTP.
 pub trait WriteGTP {
+	/// Write the GTP representation of `self` to the sink.
+	///
+	/// # Example
+	///
+	/// ```
+	/// # #![feature(try_from)]
+	/// # use std::convert::TryFrom;
+	/// # use gorrosion_gtp::messages::WriteGTP;
+	/// # use gorrosion_gtp::gtp_type;
+	/// let i = gtp_type::Int::try_from(42).unwrap();
+	/// let mut out: Vec<u8> = Vec::with_capacity(2);
+	/// i.write_gtp(&mut out);
+	/// assert_eq!(&out, b"42");
+	/// ```
 	fn write_gtp(&self, &mut impl io::Write) -> io::Result<()>;
 }
 
 /// A command that can be sent to some engine via `write_gtp`.
 /// Bring your own engine.
+#[derive(Debug)]
 pub struct Command {
 	id: Option<Int>,
 	command_name: String,
@@ -40,6 +55,7 @@ impl WriteGTP for Command {
 /// A response that can be sent to some controller via `write_gtp`,
 /// ideally matching a previously received command.
 /// Bring your own controller.
+#[derive(Debug)]
 pub struct Response {
 	id: Option<Int>,
 	success: bool,

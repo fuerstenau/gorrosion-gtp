@@ -8,6 +8,7 @@ pub struct Value {
 	data: u32,
 }
 
+#[derive(Debug)]
 pub struct TryFromIntError(());
 
 impl TryFrom<u32> for Value {

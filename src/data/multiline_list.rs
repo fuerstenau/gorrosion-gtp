@@ -2,6 +2,7 @@ use super::super::messages::WriteGTP;
 use super::*;
 use std::io;
 
+#[derive(Debug)]
 pub struct Value {
 	t: one_liner::Type,
 	data: Vec<one_liner::Value>,

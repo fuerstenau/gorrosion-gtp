@@ -2,6 +2,7 @@ use super::super::messages::WriteGTP;
 use super::*;
 use std::io;
 
+#[derive(Debug)]
 pub enum Value {
 	SimpleEntity(simple_entity::Value),
 	Collection(collection::Value),
