@@ -20,6 +20,7 @@ impl WriteGTP for Value {
 	}
 }
 
+#[derive(Clone, Debug)]
 pub struct Type {
 	first: simple_entity::Type,
 	second: simple_entity::Type,

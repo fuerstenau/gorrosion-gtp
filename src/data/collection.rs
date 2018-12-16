@@ -44,7 +44,7 @@ impl WriteGTP for Value {
 	}
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub enum Type {
 	Empty,
 	Collection(simple_entity::Type, Box<Type>),

@@ -32,7 +32,7 @@ impl WriteGTP for Value {
 	}
 }
 
-#[derive(Clone)]
+#[derive(Clone, Debug)]
 pub struct Type(collection::Type);
 
 impl From<collection::Type> for Type {

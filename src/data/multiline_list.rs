@@ -3,6 +3,7 @@ use super::*;
 use std::io;
 
 pub struct Value {
+	t: one_liner::Type,
 	data: Vec<one_liner::Value>,
 }
 
@@ -24,12 +25,47 @@ impl WriteGTP for Value {
 	}
 }
 
-pub type Type = one_liner::Type;
+#[derive(Clone, Debug)]
+pub struct Type(one_liner::Type);
+
+impl From<one_liner::Type> for Type {
+	fn from(t: one_liner::Type) -> Self {
+		Type(t)
+	}
+}
+
+impl From<simple_entity::Type> for Type {
+	fn from(t: simple_entity::Type) -> Self {
+		Type(t.into())
+	}
+}
+
+impl From<list::Type> for Type {
+	fn from(t: list::Type) -> Self {
+		Type(t.into())
+	}
+}
+
+impl From<collection::Type> for Type {
+	fn from(t: collection::Type) -> Self {
+		Type(t.into())
+	}
+}
+
+impl From<alternatives::Type> for Type {
+	fn from(t: alternatives::Type) -> Self {
+		Type(t.into())
+	}
+}
 
 impl Data for Value {
 	type Type = Type;
 
 	fn parse<'a, I: Input<'a>>(i: I, t: &Self::Type) -> IResult<I, Self> {
-		unimplemented!()
+		let Type(t) = t.clone();
+		do_parse!(i,
+			data: separated_list!(tag!("\n"), parse_gtp!(&t)) >>
+			(Value { t, data })
+		)
 	}
 }
